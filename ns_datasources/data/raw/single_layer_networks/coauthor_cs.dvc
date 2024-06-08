@@ -1,0 +1,6 @@
+outs:
+- md5: 698775167104743be3a161670148db6d.dir
+  size: 564515
+  nfiles: 1
+  hash: md5
+  path: coauthor_cs

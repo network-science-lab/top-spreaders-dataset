@@ -1,0 +1,6 @@
+outs:
+- md5: 9b223bb1709236712dbe3e49eecea17d.dir
+  size: 464824
+  nfiles: 1
+  hash: md5
+  path: citation_full_cora

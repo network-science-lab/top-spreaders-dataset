@@ -1,0 +1,6 @@
+outs:
+- md5: 8feee5cbec08bff62abf7175464e2bb1.dir
+  size: 80548128
+  nfiles: 1
+  hash: md5
+  path: reddit2

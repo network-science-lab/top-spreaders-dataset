@@ -1,0 +1,51 @@
+[project]
+name = "ns_datasources"
+
+authors = [
+    {name = "mateuszStolarski"},
+    {name = "adampirog"},
+    {name = "anty-filidor"}
+    ]
+
+description = "Network Science Lab datasources"
+readme = "README.md"
+license = { text="MIT" }
+dynamic = ["version"]
+requires-python = ">=3.11"
+dependencies = [
+        "dvc",
+    ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "isort",
+    "black",
+    "pylint"
+    ]
+
+[build-system]
+requires = ["setuptools>=60.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["ns_datasources*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "ns_datasources.version.__version__"}
+[project.scripts]
+ns-datasources = "ns_datasources.__main__:cli"
+
+[tool.black]
+line-length = 79
+target-version = ["py311"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+lines_after_imports = 2

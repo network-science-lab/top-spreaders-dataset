@@ -1,5 +1,5 @@
 [core]
     remote = gdrive
 ['remote "gdrive"']
-    url = gdrive://0ACmD69K7LbU3Uk9PVA/dvc/ns_datasources
+    url = gdrive://0ACmD69K7LbU3Uk9PVA/dvc/ns-data-sources
     gdrive_acknowledge_abuse = true

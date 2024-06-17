@@ -1,0 +1,6 @@
+outs:
+- md5: 23ebe541913b6d53fcd7bd494dcf3764.dir
+  size: 857302
+  nfiles: 1
+  hash: md5
+  path: twitch_de

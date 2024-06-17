@@ -1,0 +1,6 @@
+outs:
+- md5: 4788b373572483e16c474944bae1a2f2.dir
+  size: 1660906
+  nfiles: 1
+  hash: md5
+  path: coauthor_physics

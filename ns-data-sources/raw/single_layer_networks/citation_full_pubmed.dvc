@@ -1,0 +1,6 @@
+outs:
+- md5: 8833edfba64138f44ea8c0e6e32c8e7d.dir
+  size: 361580
+  nfiles: 1
+  hash: md5
+  path: citation_full_pubmed

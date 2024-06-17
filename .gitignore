@@ -161,3 +161,8 @@ cython_debug/
 
 # Custom
 prototyping/
+
+# dvc
+/.dvc/config.local
+/.dvc/tmp
+/.dvc/cache

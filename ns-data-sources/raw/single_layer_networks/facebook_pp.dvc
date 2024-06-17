@@ -1,0 +1,6 @@
+outs:
+- md5: c40bae9e22415af3b7b1be6eb8285efd.dir
+  size: 1115514
+  nfiles: 1
+  hash: md5
+  path: facebook_pp

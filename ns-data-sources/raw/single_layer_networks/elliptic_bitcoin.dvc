@@ -1,0 +1,6 @@
+outs:
+- md5: 89729122b8cc6a3bb5533076d3b88fc8.dir
+  size: 2826216
+  nfiles: 1
+  hash: md5
+  path: elliptic_bitcoin

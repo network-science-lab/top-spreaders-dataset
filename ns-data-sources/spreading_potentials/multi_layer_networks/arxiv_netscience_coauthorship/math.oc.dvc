@@ -1,0 +1,6 @@
+outs:
+- md5: 5a7793256aedafab77a8328245c33146.dir
+  size: 40827263
+  nfiles: 41
+  hash: md5
+  path: math.oc

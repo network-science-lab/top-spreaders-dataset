@@ -166,5 +166,3 @@ prototyping/
 /.dvc/config.local
 /.dvc/tmp
 /.dvc/cache
-ns-data-sources/spreading_potentials/multi_layer_networks/small_real
-ns-data-sources/spreading_potentials/multi_layer_networks/arxiv_netscience_coauthorship/math.oc

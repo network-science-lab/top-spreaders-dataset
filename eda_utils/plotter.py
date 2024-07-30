@@ -19,6 +19,12 @@ def plot_ax(
         yerr=partial_result[f"{metric}_std"],
         fmt="o",
         color = "royalblue",
+        alpha = 0.4,
+    )
+    ax.scatter(
+        x=partial_result[ACTOR],
+        y=partial_result[f"{metric}_avg"],
+        color = "royalblue",
     )
     ax.errorbar(
         x=top_k_pr[ACTOR],

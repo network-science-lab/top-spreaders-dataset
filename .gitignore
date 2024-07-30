@@ -166,3 +166,6 @@ prototyping/
 /.dvc/config.local
 /.dvc/tmp
 /.dvc/cache
+
+# macOS indexing
+*.DS_Store

@@ -1,0 +1,6 @@
+outs:
+- md5: 28f0e167d795fee2c60f1a1db2d1742f.dir
+  size: 48920476
+  nfiles: 2
+  hash: md5
+  path: or_015

@@ -1,0 +1,6 @@
+outs:
+- md5: 2048c9e7a7a86c2f6f207560691d8b3f.dir
+  size: 52143158
+  nfiles: 2
+  hash: md5
+  path: or_060

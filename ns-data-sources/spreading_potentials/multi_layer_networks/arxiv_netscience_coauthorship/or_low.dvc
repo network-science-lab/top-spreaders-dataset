@@ -1,0 +1,6 @@
+outs:
+- md5: baeab63b0dd72e14953b7e04ad35a71d.dir
+  size: 98762432
+  nfiles: 11
+  hash: md5
+  path: or_low

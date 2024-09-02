@@ -1,0 +1,6 @@
+outs:
+- md5: bb7dd3e1f4823e31b8f8efdc9e0217fc.dir
+  size: 59386187
+  nfiles: 74
+  hash: md5
+  path: CONTROL_fmt

@@ -1,12 +1,14 @@
+"""Script with code to generate visualisalisations of spreading potentials."""
+
 import matplotlib
 import pandas as pd
 
-from eda_utils.globals import *
+from infmax_data_utils.loaders.constants import *
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 
 
-matplotlib.use('inline')
+matplotlib.use("inline")
 
 
 def plot_ax(

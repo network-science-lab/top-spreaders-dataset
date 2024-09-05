@@ -1,3 +1,5 @@
+"""A script with strings used across module in form of variables."""
+
 ACTOR = "actor"
 EXPOSED="exposed"
 NETWORK = "network"

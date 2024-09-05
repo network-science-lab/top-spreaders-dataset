@@ -1,3 +1,5 @@
+"""A loader for the dataset of spreading potentials."""
+
 import pathlib
 import re
 

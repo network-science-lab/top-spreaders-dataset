@@ -1,5 +1,9 @@
 """A script with strings used across module in form of variables."""
 
+from pathlib import Path
+
+MLN_RAW_DATA_PATH = Path(__file__).parent.parent.parent / "ns-data-sources/raw/multi_layer_networks"
+
 ACTOR = "actor"
 EXPOSED="exposed"
 NETWORK = "network"

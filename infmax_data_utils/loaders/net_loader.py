@@ -9,7 +9,28 @@ import network_diffusion as nd
 import networkx as nx
 import torch
 
-from infmax_data_utils.loaders.constants import MLN_RAW_DATA_PATH
+from infmax_data_utils.loaders.constants import (
+    MLN_RAW_DATA_PATH,
+    ARXIV_NETSCIENCE_COAUTHORSHIP,
+    ARXIV_NETSCIENCE_COAUTHORSHIP_MATH,
+    AUCS,
+    CANNES,
+    CKM_PHYSICIANS,
+    EU_TRANSPORTATION,
+    EU_TRANSPORT_KLM,
+    ER1,
+    ER2,
+    ER3,
+    ER5,
+    FMRI74,
+    LAZEGA,
+    SF1,
+    SF2,
+    SF3,
+    SF5,
+    TIMIK1Q2009,
+    TOY_NETWORK,
+)
 from infmax_data_utils.loaders.fmri74 import read_fmri74
 
 def _network_from_pandas(path):
@@ -22,7 +43,8 @@ def _network_from_pandas(path):
     )
 
 
-def return_some_layers(get_network_func):
+def return_some_layers(get_network_func: Callable) -> Callable:
+    """Decorator for network loader to filter out a multilayer network to return only one layer."""
     @wraps(get_network_func)
     def wrapper(layer_slice = None):
         net = get_network_func()
@@ -168,42 +190,42 @@ def convert_to_torch(load_networks_func: Callable) -> Callable:
 
 @convert_to_torch
 def load_network(net_name: str) -> nd.MultilayerNetwork:
-    if net_name == "fmri74":
-        return read_fmri74(network_dir=f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", binary=True, thresh=0.75)
-    elif net_name == "arxiv_netscience_coauthorship":
+    if net_name == FMRI74:
+        return read_fmri74(network_dir=f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", binary=True, thresh=0.5)
+    elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
         return get_arxiv_network()
-    elif net_name == "arxiv_netscience_coauthorship_math.oc":
+    elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
         return get_arxiv_network(["math.OC"])
-    elif net_name == "aucs":
+    elif net_name == AUCS:
         return get_aucs_network()
-    elif net_name == "cannes":
+    elif net_name == CANNES:
         return get_cannes_network()
-    elif net_name == "ckm_physicians":
+    elif net_name == CKM_PHYSICIANS:
         return get_ckm_physicians_network()
-    elif net_name == "eu_transportation":
+    elif net_name == EU_TRANSPORTATION:
         return get_eu_transportation_network()
-    elif net_name == "eu_transport_klm":
+    elif net_name == EU_TRANSPORT_KLM:
         return get_eu_transportation_network(["KLM"])
-    elif net_name == "lazega":
+    elif net_name == LAZEGA:
         return get_lazega_network()
-    elif net_name == "er1":
+    elif net_name == ER1:
         return get_er5_network(["l2"])
-    elif net_name == "er2":
+    elif net_name == ER2:
         return get_er2_network()
-    elif net_name == "er3":
+    elif net_name == ER3:
         return get_er3_network()
-    elif net_name == "er5":
+    elif net_name == ER5:
         return get_er5_network()
-    elif net_name == "sf1":
+    elif net_name == SF1:
         return get_sf5_network(["l3"])
-    elif net_name == "sf2":
+    elif net_name == SF2:
         return get_sf2_network()
-    elif net_name == "sf3":
+    elif net_name == SF3:
         return get_sf3_network()
-    elif net_name == "sf5":
+    elif net_name == SF5:
         return get_sf5_network()
-    elif net_name == "timik1q2009":
+    elif net_name == TIMIK1Q2009:
         return get_timik1q2009_network()
-    elif net_name == "toy_network":
+    elif net_name == TOY_NETWORK:
         return nd.mln.functions.get_toy_network_piotr()
     raise AttributeError(f"Unknown network: {net_name}")

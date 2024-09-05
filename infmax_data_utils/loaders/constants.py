@@ -7,14 +7,18 @@ MLN_SP_DATA_PATH = Path(__file__).parent.parent.parent / "ns-data-sources/spread
 
 # columns in the dataset
 ACTOR = "actor"
-EXPOSED="exposed"
+EXPOSED = "exposed"
 NETWORK = "network"
-NOT_EXPOSED="not_exposed"
+NOT_EXPOSED ="not_exposed"
 P = "p"
-PEAK_INFECTED="peak_infected"
-PEAK_ITERATION="peak_iteration"
+PEAK_INFECTED = "peak_infected"
+PEAK_ITERATION = "peak_iteration"
 PROTOCOL = "protocol"
-SIMULATION_LENGTH="simulation_length"
+SIMULATION_LENGTH = "simulation_length"
+
+# allowed protocols
+OR = "OR"
+AND = "AND"
 
 # network names
 ARXIV_NETSCIENCE_COAUTHORSHIP = "arxiv_netscience_coauthorship"

@@ -9,7 +9,7 @@ import network_diffusion as nd
 import networkx as nx
 import torch
 
-from infmax_data_utils.loaders.constants import (
+from nsl_data_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
     ARXIV_NETSCIENCE_COAUTHORSHIP,
     ARXIV_NETSCIENCE_COAUTHORSHIP_MATH,
@@ -31,7 +31,7 @@ from infmax_data_utils.loaders.constants import (
     TIMIK1Q2009,
     TOY_NETWORK,
 )
-from infmax_data_utils.loaders.fmri74 import read_fmri74
+from nsl_data_utils.loaders.fmri74 import read_fmri74
 
 def _network_from_pandas(path):
     df = pd.read_csv(path, names=["node_1", "node_2", "layer"])

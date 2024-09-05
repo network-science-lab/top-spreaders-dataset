@@ -9,12 +9,12 @@ A repository with dataset and Python package to handle it.
 
 ```bash
 .
-├── .dvc               -> configuration of DVC
-├── env                -> a definition of the runtime environment for Python package
-├── infmax_data_utils  -> Python package handling data with spreading models used to generate it
-├── ns-data-sources    -> directory with datasets
+├── .dvc                   -> configuration of DVC
+├── env                    -> a definition of the runtime environment for Python package
+├── nsl_data_utils         -> Python package handling data with spreading models used to generate it
+├── nsl_data_sources       -> directory with datasets
 ├── mln_potentials_eda.ipynb  -> jupyter notebook to create EDA of datasets
-└── README.md          -> main entrypoint to trigger the pipeline
+└── README.md              -> main entrypoint to trigger the pipeline
 ```
 
 ## The dataset
@@ -27,17 +27,17 @@ execute in a shell: `dvc pull <path_to_dvc_file>`.
 
 ## Python package
 
-`infmax_data_utils`is Python package with loaders for the datasets and implementations of 
+`nsl_data_utils`is Python package with loaders for the datasets and implementations of 
 Independent Cascade Model used to generate spreading potentials the agents. To use it, you can
 install it with command:
 
 ```bash
-pip install -e infmax_data_utils
+pip install -e nsl_data_utils
 ```
 
 To contribute, please install first Conda environment:
 
 ```bash
 conda env create -f env/conda.yaml
-conda activate infmax-data-utils
+conda activate nsl-data-utils
 ```

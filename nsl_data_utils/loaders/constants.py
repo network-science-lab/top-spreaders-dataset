@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-MLN_RAW_DATA_PATH = Path(__file__).parent.parent.parent / "ns-data-sources/raw/multi_layer_networks"
-MLN_SP_DATA_PATH = Path(__file__).parent.parent.parent / "ns-data-sources/spreading_potentials/multi_layer_networks"
+MLN_RAW_DATA_PATH = Path(__file__).parent.parent.parent / "nsl_data_sources/raw/multi_layer_networks"
+MLN_SP_DATA_PATH = Path(__file__).parent.parent.parent / "nsl_data_sources/spreading_potentials/multi_layer_networks"
 
 # columns in the dataset
 ACTOR = "actor"

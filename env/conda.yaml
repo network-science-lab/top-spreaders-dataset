@@ -1,4 +1,4 @@
-name: infmax-data-utils
+name: nsl-data-utils
 channels:
   - defaults
 dependencies:

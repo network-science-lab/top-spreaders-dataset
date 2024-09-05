@@ -3,7 +3,7 @@
 import matplotlib
 import pandas as pd
 
-from infmax_data_utils.loaders.constants import *
+from nsl_data_utils.loaders.constants import *
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 

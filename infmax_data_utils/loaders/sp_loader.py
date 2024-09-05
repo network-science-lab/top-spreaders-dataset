@@ -66,7 +66,7 @@ def _get_sp(csv_paths: list[str]) -> pd.DataFrame:
 
 
 def _get_csv_paths(csv_regex: str) -> list[str]:
-    return list(Path(".").glob(csv_regex))
+    return list(Path(MLN_SP_DATA_PATH).glob(csv_regex))
 
 
 def _sp_not_implemented():
@@ -76,7 +76,7 @@ def _sp_not_implemented():
 def load_sp(net_name: str) -> pd.DataFrame:
     """Load spreading potentials dataset for given network."""
     if net_name == FMRI74:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/fmri74/*.csv"))
     elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
         csv_paths = [
             f for f in Path(f"{MLN_SP_DATA_PATH}/arxiv_netscience_coauthorship").rglob('**/*.csv') 
@@ -84,19 +84,19 @@ def load_sp(net_name: str) -> pd.DataFrame:
         ]
         return _get_sp(csv_paths)
     elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/arxiv_netscience_coauthorship/math.oc/*.csv"))
+        return _get_sp(_get_csv_paths(f"arxiv_netscience_coauthorship/math.oc/*.csv"))
     elif net_name == AUCS:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/small_real/*--net-aucs.csv"))
+        return _get_sp(_get_csv_paths(f"small_real/*--net-aucs.csv"))
     elif net_name == CANNES:
         _sp_not_implemented()
     elif net_name == CKM_PHYSICIANS:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/small_real/*--net-ckm_physicians.csv"))
+        return _get_sp(_get_csv_paths("small_real/*--net-ckm_physicians.csv"))
     elif net_name == EU_TRANSPORTATION:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/small_real/*--net-eu_transportation.csv"))
+        return _get_sp(_get_csv_paths("small_real/*--net-eu_transportation.csv"))
     elif net_name == EU_TRANSPORT_KLM:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/small_real/*--net-eu_transport_klm.csv"))
+        return _get_sp(_get_csv_paths("small_real/*--net-eu_transport_klm.csv"))
     elif net_name == LAZEGA:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/small_real/*--net-lazega.csv"))
+        return _get_sp(_get_csv_paths("small_real/*--net-lazega.csv"))
     elif net_name == ER1:
         _sp_not_implemented()
     elif net_name == ER2:
@@ -114,9 +114,9 @@ def load_sp(net_name: str) -> pd.DataFrame:
     elif net_name == SF5:
         _sp_not_implemented()
     elif net_name == TIMIK1Q2009:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/timik1q2009/**/*.csv"))
+        return _get_sp(_get_csv_paths("timik1q2009/**/*.csv"))
     elif net_name == TOY_NETWORK:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/small_real/*--net-toy_network.csv"))
+        return _get_sp(_get_csv_paths("small_real/*--net-toy_network.csv"))
     raise AttributeError(f"Unknown network: {net_name}")
 
 

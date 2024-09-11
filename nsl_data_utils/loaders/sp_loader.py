@@ -98,21 +98,21 @@ def load_sp(net_name: str) -> pd.DataFrame:
     elif net_name == LAZEGA:
         return _get_sp(_get_csv_paths("small_real/*--net-lazega.csv"))
     elif net_name == ER1:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths("small_artificial/*--net-er1.csv"))
     elif net_name == ER2:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths("small_artificial/*--net-er2.csv"))
     elif net_name == ER3:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths("small_artificial/*--net-er3.csv"))
     elif net_name == ER5:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths("small_artificial/*--net-er5.csv"))
     elif net_name == SF1:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths("small_artificial/*--net-sf1.csv"))
     elif net_name == SF2:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths("small_artificial/*--net-sf2.csv"))
     elif net_name == SF3:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths("small_artificial/*--net-sf3.csv"))
     elif net_name == SF5:
-        _sp_not_implemented()
+        return _get_sp(_get_csv_paths("small_artificial/*--net-sf5.csv"))
     elif net_name == TIMIK1Q2009:
         return _get_sp(_get_csv_paths("timik1q2009/**/*.csv"))
     elif net_name == TOY_NETWORK:

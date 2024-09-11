@@ -1,0 +1,6 @@
+outs:
+- md5: 31c92db15c55dfc1c4a4e9fe927dd5fb.dir
+  size: 180712697
+  nfiles: 321
+  hash: md5
+  path: small_artificial

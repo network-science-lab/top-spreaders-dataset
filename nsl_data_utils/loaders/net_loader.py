@@ -182,8 +182,7 @@ def convert_to_torch(load_networks_func: Callable) -> Callable:
     ) -> nd.MultilayerNetwork | nd.MultilayerNetworkTorch:
         net = load_networks_func(*args, **kwargs)
         if as_tensor:
-            device = "cuda:0" if torch.cuda.is_available() else "cpu"
-            return nd.MultilayerNetworkTorch.from_mln(net, device=device)
+            return nd.MultilayerNetworkTorch.from_mln(net)
         return net
     return wrapper
 

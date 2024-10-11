@@ -1,17 +1,15 @@
-"""
-Generate a multilayer network
-"""
+"""Generate multilayer networks with Preferential Attachment or Erdos-Renyi models."""
+
 import abc
 
 from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
 from pathlib import Path
-from typing import Any, Callable
 
 import numpy as np
 import uunet.multinet as ml
+
 from tqdm.contrib.concurrent import process_map
 from uunet._multinet import PyMLNetwork, PyEvolutionModel
-
 
 
 class MultilayerBaseGenerator(abc.ABC):
@@ -76,7 +74,14 @@ class MultilayerBaseGenerator(abc.ABC):
 class MultilayerERGenerator(MultilayerBaseGenerator):
     """Class which generates multilayer network with Erdos-Renyi algorithm."""
     
-    def __init__(self, nb_layers: int, nb_actors: int, nb_steps: int, std_nodes: int, random_state: int | None = None) -> None:
+    def __init__(
+        self,
+        nb_layers: int,
+        nb_actors: int,
+        nb_steps: int,
+        std_nodes: int,
+        random_state: int | None = None
+    ) -> None:
         """
         Initialise the object.
 
@@ -98,7 +103,7 @@ class MultilayerERGenerator(MultilayerBaseGenerator):
 
     def get_models(self) -> list[PyEvolutionModel]:
         """
-        Get evolutionary models for each layer.
+        Get evolutionary models for each layer with num nodes drawn from a standard distribution.
 
         :return: list of Erdos-Renyi generators
         """
@@ -111,15 +116,21 @@ class MultilayerERGenerator(MultilayerBaseGenerator):
 class MultilayerPAGenerator(MultilayerBaseGenerator):
     """Class which generates multilayer network with Preferential Attachment algorithm."""
     
-    def __init__(self, nb_layers: int, nb_actors: int, nb_steps: int, nb_hubs: int, random_state: int | None = None) -> None:
+    def __init__(
+        self,
+        nb_layers: int,
+        nb_actors: int,
+        nb_steps: int,
+        nb_hubs: int,
+        random_state: int | None = None
+    ) -> None:
         """
         Initialise the object.
 
         :param nb_layers: number of layers of the generated network
         :param nb_actors: number of actors in the network
         :param nb_steps: number of steps of the generative algorithm which builds the network
-        :param std_nodes: standard deviation of the number of nodes in each layer (expected value
-            is a number of actors)
+        :param nb_seeds: number of seeds in each layer and a number of egdes from each new vertex
         :param random_state: RNG state to make the generation reproducible, defaults to None
         """
         super().__init__(
@@ -232,7 +243,6 @@ def main(args: Namespace):
 
 
 def cli():
-    import network_diffusion as nd
     args = parse_args(
         [
             "100",
@@ -245,13 +255,35 @@ def cli():
         ]
     )
     # main(args)
-    net_uu = MultilayerERGenerator(nb_layers=3, nb_actors=30, nb_steps=40, std_nodes=14, random_state=43)()
-    # ml.plot(n=net_uu)
+
+
+def dry_run() -> None:
+    import matplotlib.pyplot as plt
+    import networkx as nx
+    import network_diffusion as nd
+
+    net_uu = MultilayerERGenerator(
+        nb_layers=3, nb_actors=300, nb_steps=400, std_nodes=30, random_state=43
+    )()
+    # net_uu = MultilayerPAGenerator(
+    #     nb_layers=3, nb_actors=1000, nb_steps=1000, nb_hubs=3, random_state=43
+    # )()
+    print(net_uu)
+
     net_nx = ml.to_nx_dict(net_uu)
+    print(net_nx)
+
     net_nd = nd.MultilayerNetwork(layers=net_nx)
-    nd.mln.functions.draw_mln(net_nd)
-    # print(network)
+    print(net_nd)
+
+    fig, axs = plt.subplots(nrows=1, ncols=len(net_nx))
+    for l_idx, (l_name, l_graph) in enumerate(net_nx.items()):
+        axs[l_idx].hist(nx.degree_histogram(l_graph), bins=10)
+        axs[l_idx].set_title(l_name)
+    fig.suptitle("Degree distribution")
+    plt.show()
 
 
 if __name__ == "__main__":
-    cli()
+    dry_run()
+    # cli()

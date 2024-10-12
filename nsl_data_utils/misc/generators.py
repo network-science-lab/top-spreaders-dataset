@@ -13,21 +13,17 @@ class MultilayerBaseGenerator(abc.ABC):
     """Abstract base class for multilayer network generators."""
 
     @abc.abstractmethod
-    def __init__(
-        self, nb_layers: int, nb_actors: int, nb_steps: int, random_state: int | None = None,
-    ) -> None:
+    def __init__(self, nb_layers: int, nb_actors: int, nb_steps: int) -> None:
         """
         Initialise the object.
 
         :param nb_layers: number of layers of the generated network
         :param nb_actors: number of actors in the network
         :param nb_steps: number of steps of the generative algorithm which builds the network
-        :param random_state: RNG state to make the generation reproducible, defaults to None
         """
         self.nb_layers=nb_layers
         self.nb_actors=nb_actors
         self.nb_steps=nb_steps
-        self.rng = np.random.default_rng(random_state)
 
     @abc.abstractmethod
     def get_models(self) -> list[PyEvolutionModel]:
@@ -55,7 +51,7 @@ class MultilayerBaseGenerator(abc.ABC):
         :return: generated network as a PyEvolutionModel object
         """
         models = self.get_models()
-        pr_internal = self.rng.uniform(0, 1, size=self.nb_layers)
+        pr_internal = np.random.uniform(0, 1, size=self.nb_layers)
         pr_external = np.ones_like(pr_internal) - pr_internal  # TODO: there is no noaction step now!
         dependency = self.get_dependency()
         return ml.grow(
@@ -71,14 +67,7 @@ class MultilayerBaseGenerator(abc.ABC):
 class MultilayerERGenerator(MultilayerBaseGenerator):
     """Class which generates multilayer network with Erdos-Renyi algorithm."""
     
-    def __init__(
-        self,
-        nb_layers: int,
-        nb_actors: int,
-        nb_steps: int,
-        std_nodes: int,
-        random_state: int | None = None
-    ) -> None:
+    def __init__(self, nb_layers: int, nb_actors: int, nb_steps: int, std_nodes: int) -> None:
         """
         Initialise the object.
 
@@ -87,14 +76,8 @@ class MultilayerERGenerator(MultilayerBaseGenerator):
         :param nb_steps: number of steps of the generative algorithm which builds the network
         :param std_nodes: standard deviation of the number of nodes in each layer (expected value
             is a number of actors)
-        :param random_state: RNG state to make the generation reproducible, defaults to None
         """
-        super().__init__(
-            nb_layers=nb_layers,
-            nb_actors=nb_actors,
-            nb_steps=nb_steps,
-            random_state=random_state
-        )
+        super().__init__(nb_layers=nb_layers, nb_actors=nb_actors, nb_steps=nb_steps)
         assert nb_actors - 2 * std_nodes > 0, "Number of actors shall be g.t. 2 * std_nodes"
         self.std_nodes=std_nodes
 
@@ -104,7 +87,7 @@ class MultilayerERGenerator(MultilayerBaseGenerator):
 
         :return: list of Erdos-Renyi generators
         """
-        layer_sizes = self.rng.normal(
+        layer_sizes = np.random.normal(
             loc=self.nb_actors - self.std_nodes, scale=self.std_nodes, size=self.nb_layers
         ).astype(int).clip(min=1, max=self.nb_actors)
         return [ml.evolution_er(n=lv) for lv in layer_sizes]
@@ -113,14 +96,7 @@ class MultilayerERGenerator(MultilayerBaseGenerator):
 class MultilayerPAGenerator(MultilayerBaseGenerator):
     """Class which generates multilayer network with Preferential Attachment algorithm."""
     
-    def __init__(
-        self,
-        nb_layers: int,
-        nb_actors: int,
-        nb_steps: int,
-        nb_hubs: int,
-        random_state: int | None = None
-    ) -> None:
+    def __init__(self, nb_layers: int, nb_actors: int, nb_steps: int, nb_hubs: int) -> None:
         """
         Initialise the object.
 
@@ -128,14 +104,8 @@ class MultilayerPAGenerator(MultilayerBaseGenerator):
         :param nb_actors: number of actors in the network
         :param nb_steps: number of steps of the generative algorithm which builds the network
         :param nb_seeds: number of seeds in each layer and a number of egdes from each new vertex
-        :param random_state: RNG state to make the generation reproducible, defaults to None
         """
-        super().__init__(
-            nb_layers=nb_layers,
-            nb_actors=nb_actors,
-            nb_steps=nb_steps,
-            random_state=random_state
-        )
+        super().__init__(nb_layers=nb_layers, nb_actors=nb_actors, nb_steps=nb_steps)
         self.nb_hubs = nb_hubs
 
     def get_models(self) -> list[PyEvolutionModel]:
@@ -156,13 +126,9 @@ def dry_run(model: Literal["PA", "ER"]) -> None:
     import network_diffusion as nd
 
     if model == "ER":
-        net_uu = MultilayerERGenerator(
-            nb_layers=3, nb_actors=300, nb_steps=400, std_nodes=30, random_state=43
-        )()
+        net_uu = MultilayerERGenerator(nb_layers=3, nb_actors=300, nb_steps=400, std_nodes=30)()
     elif model == "PA":
-        net_uu = MultilayerPAGenerator(
-            nb_layers=3, nb_actors=1000, nb_steps=1000, nb_hubs=3, random_state=43
-        )()
+        net_uu = MultilayerPAGenerator(nb_layers=3, nb_actors=1000, nb_steps=1000, nb_hubs=3)()
     else:
         raise ValueError("Incorret model name!")
     print(net_uu)

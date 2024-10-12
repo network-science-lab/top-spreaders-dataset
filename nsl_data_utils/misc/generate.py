@@ -20,7 +20,7 @@ def generate_and_save(
 ) -> None:
     """Generate network and save it as an mpx file."""
     if model_type == "PA":
-        nb_hubs = np.array([0.05 * actors], dtype=np.int32).clip(min=3).item()
+        nb_hubs = int(max(3, 0.05 * actors))
         generator = MultilayerPAGenerator(
             nb_layers=layers,
             nb_actors=actors,
@@ -66,14 +66,14 @@ def main(args: Namespace) -> None:
     """Main generation routine feed with CLI args."""
 
     if args.random_state is not None:
-        np.random.seed(args.random_state)
+        np.random.seed(args.random_state)  # TODO!!!
 
     actors = np.random.randint(args.min_actors, args.max_actors + 1, dtype=np.int32, size=args.nb_networks)
     layers = np.random.randint(args.min_layers, args.max_layers + 1, dtype=np.int32, size=args.nb_networks)
     steps = actors * 5
     output_dir = Path(args.output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)
-    outfiles = (output_dir / f"network_{a}.mpx" for a in actors)
+    outfiles = (output_dir / f"network_{idx}.mpx" for idx, _ in enumerate(actors, 1))
     random_states = (
         np.random.random(size=len(actors)) * 10 ** (np.log10(len(actors)) + 1)
     ).astype(np.int32)

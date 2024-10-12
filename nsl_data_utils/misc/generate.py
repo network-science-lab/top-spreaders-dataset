@@ -68,17 +68,17 @@ def main(args: Namespace) -> None:
 
 def cli():
     args = parse_args(
-        [
-            "100",
-            "100",
-            "10000",
-            "2",
-            "5",
-            "ER",
-            "--output-dir", "/Users/michal/Development/infmax-trainer-icm-mln/krakrarkarka",
-            "--n-jobs", "5",
-            "--chunksize", "20"
-        ]
+        # [
+        #     "100",
+        #     "100",
+        #     "10000",
+        #     "2",
+        #     "5",
+        #     "ER",
+        #     "--output-dir", "krakrarkarka",
+        #     "--n-jobs", "5",
+        #     "--chunksize", "20"
+        # ]
     )
     print(args)
     main(args)

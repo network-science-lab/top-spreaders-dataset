@@ -89,7 +89,7 @@ class MultilayerERGenerator(MultilayerBaseGenerator):
         """
         layer_sizes = np.random.normal(
             loc=self.nb_actors - self.std_nodes, scale=self.std_nodes, size=self.nb_layers
-        ).astype(int).clip(min=1, max=self.nb_actors)
+        ).astype(np.int32).clip(min=1, max=self.nb_actors)
         return [ml.evolution_er(n=lv) for lv in layer_sizes]
 
 

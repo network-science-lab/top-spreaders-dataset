@@ -12,12 +12,12 @@ from tqdm.contrib.concurrent import process_map
 
 def generate_and_save(model_type: str, actors: int, layers: int, steps: int, outfile: str) -> None:
     """Generate network and save it as an mpx file."""
-    if model_type == "PA":
+    if model_type.upper() == "PA":
         nb_hubs = int(max(3, 0.05 * actors))
         generator = MultilayerPAGenerator(
             nb_layers=layers, nb_actors=actors, nb_steps=steps, nb_hubs=nb_hubs
         )
-    elif model_type == "ER":
+    elif model_type.upper() == "ER":
         std_nodes = int(0.1 * actors)
         generator = MultilayerERGenerator(
             nb_layers=layers, nb_actors=actors, nb_steps=steps, std_nodes=std_nodes
@@ -48,8 +48,18 @@ def parse_args(args=None) -> Namespace:
 
 def main(args: Namespace) -> None:
     """Main generation routine feed with CLI args."""
-    actors = np.random.randint(args.min_actors, args.max_actors + 1, dtype=np.int32, size=args.nb_networks)
-    layers = np.random.randint(args.min_layers, args.max_layers + 1, dtype=np.int32, size=args.nb_networks)
+    actors = np.random.randint(  # TODO: consider using a novel RNG numpy's policy!
+        args.min_actors,
+        args.max_actors + 1,
+        dtype=np.int32,
+        size=args.nb_networks,
+    )
+    layers = np.random.randint(
+        args.min_layers,
+        args.max_layers + 1,
+        dtype=np.int32,
+        size=args.nb_networks,
+    )
     steps = actors * 5
     output_dir = Path(args.output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)
@@ -66,20 +76,8 @@ def main(args: Namespace) -> None:
     )
 
 
-def cli():
-    args = parse_args(
-        # [
-        #     "100",
-        #     "100",
-        #     "10000",
-        #     "2",
-        #     "5",
-        #     "ER",
-        #     "--output-dir", "krakrarkarka",
-        #     "--n-jobs", "5",
-        #     "--chunksize", "20"
-        # ]
-    )
+def cli() -> None:
+    args = parse_args()
     print(args)
     main(args)
 

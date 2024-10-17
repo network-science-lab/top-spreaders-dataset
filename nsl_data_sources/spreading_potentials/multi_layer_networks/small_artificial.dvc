@@ -3,4 +3,4 @@ outs:
   size: 180712697
   nfiles: 321
   hash: md5
-  path: small_artificial
+  path: artificial_small

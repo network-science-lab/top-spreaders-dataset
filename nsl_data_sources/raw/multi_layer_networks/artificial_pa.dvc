@@ -1,0 +1,6 @@
+outs:
+- md5: 60f4b1177ed2ea89119f65e5d1dd7fe7.dir
+  size: 57315140
+  nfiles: 100
+  hash: md5
+  path: artificial_pa

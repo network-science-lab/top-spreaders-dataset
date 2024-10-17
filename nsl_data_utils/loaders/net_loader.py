@@ -23,7 +23,9 @@ from nsl_data_utils.loaders.constants import (
     ER3,
     ER5,
     FMRI74,
-    L2_COURSE_NET,
+    L2_COURSE_NET_1,
+    L2_COURSE_NET_2,
+    L2_COURSE_NET_3,
     LAZEGA,
     SF1,
     SF2,
@@ -207,8 +209,12 @@ def load_network(net_name: str) -> nd.MultilayerNetwork:
         return get_eu_transportation_network()
     elif net_name == EU_TRANSPORT_KLM:
         return get_eu_transportation_network(["KLM"])
-    elif net_name == L2_COURSE_NET:
+    elif net_name == L2_COURSE_NET_1:
         return nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False).snaps[0]
+    elif net_name == L2_COURSE_NET_2:
+        return nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False).snaps[1]
+    elif net_name == L2_COURSE_NET_3:
+        return nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False).snaps[2]
     elif net_name == LAZEGA:
         return get_lazega_network()
     elif net_name == ER1:

@@ -8,6 +8,7 @@ import pandas as pd
 import network_diffusion as nd
 import networkx as nx
 import torch
+import uunet.multinet
 
 from nsl_data_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
@@ -30,6 +31,8 @@ from nsl_data_utils.loaders.constants import (
     TOY_NETWORK,
 )
 from nsl_data_utils.loaders.fmri74 import read_fmri74
+from tqdm import tqdm
+
 
 def _network_from_pandas(path):
     df = pd.read_csv(path, names=["node_1", "node_2", "layer"])
@@ -147,9 +150,13 @@ def get_timik1q2009_network():
 
 
 def get_artificial_nets(dir_name: str) -> dict[str, nd.MultilayerNetwork]:
-    nets_dict = {}
-    for i in Path(f"{MLN_RAW_DATA_PATH}/{dir_name}").glob("*.mpx"):
-        nets_dict[i.stem] = nd.MultilayerNetwork.from_mpx(i)
+    nets_dict = {}  # TODO: this function is super slow
+    paths = list(Path(f"{MLN_RAW_DATA_PATH}/{dir_name}").glob("*.mpx"))
+    for path in tqdm(paths,  desc="loading networks"):
+        uu_net = uunet.multinet.read(str(path))
+        nets_dict[path.stem] = nd.MultilayerNetwork(
+            uunet.multinet.to_nx_dict(uu_net)  # TODO: it's a workaround due to obsolete nd loader
+        )
     return nets_dict
 
 
@@ -196,7 +203,7 @@ def load_network(net_name: str) -> dict[str, nd.MultilayerNetwork]:
     elif net_name == EU_TRANSPORTATION:
         return {net_name: get_eu_transportation_network()}
     elif net_name == EU_TRANSPORT_KLM:
-        return get_eu_transportation_network(["KLM"])
+        return {net_name: get_eu_transportation_network(["KLM"])}
     elif net_name == L2_COURSE_NET_1:
         net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
         return {L2_COURSE_NET_1: net.snaps[0]}

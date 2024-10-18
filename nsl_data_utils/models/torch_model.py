@@ -63,8 +63,8 @@ class TorchMICModel:
         """
         raw_signals = torch.rand_like(A.values(), dtype=float)
         thre_signals = (raw_signals < p).to(float)
-        T = torch.sparse_coo_tensor(indices=A.indices(), values=thre_signals)
-        # assert A.shape == T.shape
+        T = torch.sparse_coo_tensor(indices=A.indices(), values=thre_signals, size=A.shape)
+        # assert A.shape == T.shape, f"{A.shape} != {T.shape}"
         # assert ((A - T).to_dense() < 0).sum() == 0
         return T
 
@@ -90,8 +90,6 @@ class TorchMICModel:
         S_f = self.mask_S_from(S)
         S_t = self.mask_S_to(S)
         S_new = ((T * S_f).sum(dim=1) * S_t).to_dense()
-        # assert torch.all(S[S_new.to(torch.int).to(bool)] == 0).item() == True, \
-        #     "Some nodes were activated against rules - only these with state 0 can be activated!"
         return S_new
 
     @staticmethod

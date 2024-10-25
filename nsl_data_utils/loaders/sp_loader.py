@@ -67,7 +67,7 @@ def _get_csv_paths(csv_regex: str) -> list[Path]:
     return list(Path(MLN_SP_DATA_PATH).glob(csv_regex))
 
 
-def _sort_csv_paths(csv_regex: str):
+def _sort_csv_paths(csv_regex: str) -> dict[str, list[Path]]:
     """Reads all CSVs from a directory and sort it by th network's name."""
     all_paths = _get_csv_paths(csv_regex=csv_regex)
     sorted_paths = {}

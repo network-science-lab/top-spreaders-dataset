@@ -99,7 +99,7 @@ def load_sp(net_name: str) -> dict[str, pd.DataFrame]:
     elif net_name == ARTIFICIAL_PA:
         return _get_sp_bulk(ARTIFICIAL_PA)
     elif net_name == ARTIFICIAL_SMALL:
-        return _get_sp_bulk("small_artificial")
+        return _get_sp_bulk(ARTIFICIAL_SMALL)
     elif net_name == FMRI74:
         return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/fmri74/*.csv"))
     elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
@@ -157,10 +157,3 @@ def get_gt_data(sp_raw: pd.DataFrame, protocol: str, p: float | None, budget: in
         ascending=[False, True, True, False]
     )
     return sp_mean.iloc[:budget][ACTOR].tolist()
-
-
-
-if __name__ == "__main__":
-    a = load_sp(ARTIFICIAL_SMALL)
-    print(a.keys())
-    print(get_gt_data(a["sf1"], "OR", 0.5, 10))

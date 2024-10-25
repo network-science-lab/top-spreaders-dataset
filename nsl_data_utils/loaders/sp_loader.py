@@ -74,7 +74,6 @@ def _sort_csv_paths(csv_regex: str):
     for csv_path in all_paths:
         net_name = csv_path.stem.split("-")[-1]
         if not sorted_paths.get(net_name):
-            print(net_name, csv_path)
             sorted_paths[net_name] = [csv_path]
         else:
             sorted_paths[net_name].append(csv_path)
@@ -136,18 +135,17 @@ def load_sp(net_name: str) -> dict[str, pd.DataFrame]:
     raise AttributeError(f"Unknown network: {net_name}")
 
 
-def get_gt_data(net_name: str, protocol: str, p: float | None, budget: int) -> list[Any]:
+def get_gt_data(sp_raw: pd.DataFrame, protocol: str, p: float | None, budget: int) -> list[Any]:
     """
     Get actors that performed the best in given spreading contitions.
 
-    :param net_name: network name to obtain GT data for
+    :param sp_raw: DataFrame loaded with `load_sp` with raw spreading potentials for a given network
     :param protocol: protocol of the multilayer ICM
     :param p: probability of the multilayer ICM, if not provided probability will be discarded in
         the process of selecting top-k actors
     :param budget: top-k actors to return
     :return: IDs of actors that performed the best in given contidions
     """
-    sp_raw = load_sp(net_name=net_name)
     if p:
         sp_mean  = sp_raw.groupby(by=[NETWORK, PROTOCOL, ACTOR, P]).mean().reset_index()
         sp_mean = sp_mean[(sp_mean[PROTOCOL] == protocol) & (sp_mean[P] == p)]
@@ -164,4 +162,5 @@ def get_gt_data(net_name: str, protocol: str, p: float | None, budget: int) -> l
 
 if __name__ == "__main__":
     a = load_sp(ARTIFICIAL_SMALL)
-    print(a)
+    print(a.keys())
+    print(get_gt_data(a["sf1"], "OR", 0.5, 10))

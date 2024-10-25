@@ -155,7 +155,7 @@ def get_artificial_nets(dir_name: str) -> dict[str, nd.MultilayerNetwork]:
     for path in tqdm(paths,  desc="loading networks"):
         uu_net = uunet.multinet.read(str(path))
         nets_dict[path.stem] = nd.MultilayerNetwork(
-            uunet.multinet.to_nx_dict(uu_net)  # TODO: it's a workaround due to obsolete nd loader
+            uunet.multinet.to_nx_dict(uu_net)  # TODO: it's a workaround due to the obsolete nd loader
         )
     return nets_dict
 

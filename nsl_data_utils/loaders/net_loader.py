@@ -8,7 +8,6 @@ import pandas as pd
 import network_diffusion as nd
 import networkx as nx
 import torch
-import uunet.multinet
 
 from nsl_data_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
@@ -153,10 +152,7 @@ def get_artificial_nets(dir_name: str) -> dict[str, nd.MultilayerNetwork]:
     nets_dict = {}  # TODO: this function is super slow
     paths = list(Path(f"{MLN_RAW_DATA_PATH}/{dir_name}").glob("*.mpx"))
     for path in tqdm(paths,  desc="loading networks"):
-        uu_net = uunet.multinet.read(str(path))
-        nets_dict[path.stem] = nd.MultilayerNetwork(
-            uunet.multinet.to_nx_dict(uu_net)  # TODO: it's a workaround due to the obsolete nd loader
-        )
+        nets_dict[path.stem] = nd.MultilayerNetwork.from_mpx(str(path))
     return nets_dict
 
 

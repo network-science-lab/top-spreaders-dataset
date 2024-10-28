@@ -11,6 +11,9 @@ import torch
 
 from nsl_data_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
+    ARTIFICIAL_ER,
+    ARTIFICIAL_PA,
+    ARTIFICIAL_SMALL,
     ARXIV_NETSCIENCE_COAUTHORSHIP,
     ARXIV_NETSCIENCE_COAUTHORSHIP_MATH,
     AUCS,
@@ -18,20 +21,17 @@ from nsl_data_utils.loaders.constants import (
     CKM_PHYSICIANS,
     EU_TRANSPORTATION,
     EU_TRANSPORT_KLM,
-    ER1,
-    ER2,
-    ER3,
-    ER5,
     FMRI74,
+    L2_COURSE_NET_1,
+    L2_COURSE_NET_2,
+    L2_COURSE_NET_3,
     LAZEGA,
-    SF1,
-    SF2,
-    SF3,
-    SF5,
     TIMIK1Q2009,
     TOY_NETWORK,
 )
 from nsl_data_utils.loaders.fmri74 import read_fmri74
+from tqdm import tqdm
+
 
 def _network_from_pandas(path):
     df = pd.read_csv(path, names=["node_1", "node_2", "layer"])
@@ -76,32 +76,6 @@ def get_lazega_network():
     return _network_from_pandas(
         f"{MLN_RAW_DATA_PATH}/small_real/Lazega-Law-Firm_4NoNatureNoLoops.edges"
     )
-
-
-def get_er2_network():
-    return nd.MultilayerNetwork.from_mpx(file_path=f"{MLN_RAW_DATA_PATH}/small_artificial/er_2.mpx")
-
-
-def get_er3_network():
-    return nd.MultilayerNetwork.from_mpx(file_path=f"{MLN_RAW_DATA_PATH}/small_artificial/er_3.mpx")
-
-
-@return_some_layers
-def get_er5_network():
-    return nd.MultilayerNetwork.from_mpx(file_path=f"{MLN_RAW_DATA_PATH}/small_artificial/er_5.mpx")
-
-
-def get_sf2_network():
-    return nd.MultilayerNetwork.from_mpx(file_path=f"{MLN_RAW_DATA_PATH}/small_artificial/sf_2.mpx")
-
-
-def get_sf3_network():
-    return nd.MultilayerNetwork.from_mpx(file_path=f"{MLN_RAW_DATA_PATH}/small_artificial/sf_3.mpx")
-
-
-@return_some_layers
-def get_sf5_network():
-    return nd.MultilayerNetwork.from_mpx(file_path=f"{MLN_RAW_DATA_PATH}/small_artificial/sf_5.mpx")
 
 
 def get_ddm_network(layernames_path, edgelist_path, weighted, digraph):
@@ -174,58 +148,71 @@ def get_timik1q2009_network():
     return nd.MultilayerNetwork.from_nx_layers(layer_graphs, layer_names)
 
 
+def get_artificial_nets(dir_name: str) -> dict[str, nd.MultilayerNetwork]:
+    nets_dict = {}  # TODO: this function is super slow
+    paths = list(Path(f"{MLN_RAW_DATA_PATH}/{dir_name}").glob("*.mpx"))
+    for path in tqdm(paths,  desc="loading networks"):
+        nets_dict[path.stem] = nd.MultilayerNetwork.from_mpx(str(path))
+    return nets_dict
+
+
 def convert_to_torch(load_networks_func: Callable) -> Callable:
     """Decorate loader function so that it can convert the network on the fly to the tensor repr."""
     @wraps(load_networks_func)
     def wrapper(
         *args, as_tensor: bool, **kwargs
-    ) -> nd.MultilayerNetwork | nd.MultilayerNetworkTorch:
-        net = load_networks_func(*args, **kwargs)
+    ) -> dict[str, nd.MultilayerNetwork] | dict[str, nd.MultilayerNetworkTorch]:
+        net_dict = load_networks_func(*args, **kwargs)
         if as_tensor:
             device = "cuda:0" if torch.cuda.is_available() else "cpu"
-            return nd.MultilayerNetworkTorch.from_mln(net, device=device)
-        return net
+            return {
+                net_name: nd.MultilayerNetworkTorch.from_mln(net_graph, device=device)
+                for net_name, net_graph in net_dict.items()
+            }
+        return net_dict
     return wrapper
 
 
 @convert_to_torch
-def load_network(net_name: str) -> nd.MultilayerNetwork:
-    if net_name == FMRI74:
-        return read_fmri74(network_dir=f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", binary=True, thresh=0.5)
+def load_network(net_name: str) -> dict[str, nd.MultilayerNetwork]:
+    if net_name == ARTIFICIAL_ER:
+        return get_artificial_nets("artificial_er")
+    elif net_name == ARTIFICIAL_PA:
+        return get_artificial_nets("artificial_pa")
+    elif net_name == ARTIFICIAL_SMALL:
+        nets_dict = get_artificial_nets("artificial_small")
+        nets_dict["er1"] = nd.MultilayerNetwork.from_nx_layers([nets_dict["er5"]["l2"]], ["l2"])
+        nets_dict["sf1"] = nd.MultilayerNetwork.from_nx_layers([nets_dict["sf5"]["l3"]], ["l3"])
+        return nets_dict
+    elif net_name == FMRI74:
+        return {net_name: read_fmri74(f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", True, 0.5)}
     elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
-        return get_arxiv_network()
+        return {net_name: get_arxiv_network()}
     elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
-        return get_arxiv_network(["math.OC"])
+        return {net_name: get_arxiv_network(["math.OC"])}
     elif net_name == AUCS:
-        return get_aucs_network()
+        return {net_name: get_aucs_network()}
     elif net_name == CANNES:
-        return get_cannes_network()
+        return {net_name: get_cannes_network()}
     elif net_name == CKM_PHYSICIANS:
-        return get_ckm_physicians_network()
+        return {net_name: get_ckm_physicians_network()}
     elif net_name == EU_TRANSPORTATION:
-        return get_eu_transportation_network()
+        return {net_name: get_eu_transportation_network()}
     elif net_name == EU_TRANSPORT_KLM:
-        return get_eu_transportation_network(["KLM"])
+        return {net_name: get_eu_transportation_network(["KLM"])}
+    elif net_name == L2_COURSE_NET_1:
+        net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
+        return {L2_COURSE_NET_1: net.snaps[0]}
+    elif net_name == L2_COURSE_NET_2:
+        net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
+        return {L2_COURSE_NET_2: net.snaps[1]}
+    elif net_name == L2_COURSE_NET_3:
+        net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
+        return {L2_COURSE_NET_3: net.snaps[2]}
     elif net_name == LAZEGA:
-        return get_lazega_network()
-    elif net_name == ER1:
-        return get_er5_network(["l2"])
-    elif net_name == ER2:
-        return get_er2_network()
-    elif net_name == ER3:
-        return get_er3_network()
-    elif net_name == ER5:
-        return get_er5_network()
-    elif net_name == SF1:
-        return get_sf5_network(["l3"])
-    elif net_name == SF2:
-        return get_sf2_network()
-    elif net_name == SF3:
-        return get_sf3_network()
-    elif net_name == SF5:
-        return get_sf5_network()
+        return {net_name: get_lazega_network()}
     elif net_name == TIMIK1Q2009:
-        return get_timik1q2009_network()
+        return {net_name: get_timik1q2009_network()}
     elif net_name == TOY_NETWORK:
-        return nd.mln.functions.get_toy_network_piotr()
+        return {net_name: nd.mln.functions.get_toy_network_piotr()}
     raise AttributeError(f"Unknown network: {net_name}")

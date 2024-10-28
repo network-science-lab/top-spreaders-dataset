@@ -1,0 +1,6 @@
+outs:
+- md5: 8cf0daae70d4ea9c20892ae8916d8179.dir
+  size: 775403
+  nfiles: 6
+  hash: md5
+  path: artificial_small

@@ -34,6 +34,7 @@ from nsl_data_utils.loaders.constants import (
     TIMIK1Q2009,
     TOY_NETWORK,
 )
+from tqdm import tqdm
 
 
 def get_simulation_params(file_name: Path) -> tuple[str, str, str]:
@@ -60,6 +61,7 @@ def _get_sp(csv_paths: list[str]) -> pd.DataFrame:
     sp[[SIMULATION_LENGTH, EXPOSED, NOT_EXPOSED, PEAK_INFECTED, PEAK_ITERATION, P]] = sp[
         [SIMULATION_LENGTH, EXPOSED, NOT_EXPOSED, PEAK_INFECTED, PEAK_ITERATION, P]
     ].apply(pd.to_numeric)
+    sp[ACTOR] = sp[ACTOR].astype(str)
     return sp
 
 
@@ -83,8 +85,10 @@ def _sort_csv_paths(csv_regex: str) -> dict[str, list[Path]]:
 def _get_sp_bulk(net_group_name: str) -> dict[str, pd.DataFrame]:
     """Bulk loader of SP for given network group."""
     sp_dict = {}
-    for net_name, csv_paths in _sort_csv_paths(f"{net_group_name}/*.csv").items():
-        sp_dict[net_name] = _get_sp(csv_paths)
+    csv_paths = _sort_csv_paths(f"{net_group_name}/*.csv")
+    for net_name in (p_bar := tqdm(csv_paths)):
+        p_bar.set_description_str(f"Loading SP for: {net_name}")
+        sp_dict[net_name] = _get_sp(csv_paths[net_name])
     return sp_dict
 
 
@@ -101,7 +105,7 @@ def load_sp(net_name: str) -> dict[str, pd.DataFrame]:
     elif net_name == ARTIFICIAL_SMALL:
         return _get_sp_bulk(ARTIFICIAL_SMALL)
     elif net_name == FMRI74:
-        return _get_sp(_get_csv_paths(f"{MLN_SP_DATA_PATH}/fmri74/*.csv"))
+        return {net_name: _get_sp(_get_csv_paths(f"fmri74/*.csv"))}
     elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
         csv_paths = [
             f for f in Path(f"{MLN_SP_DATA_PATH}/arxiv_netscience_coauthorship").rglob('**/*.csv') 

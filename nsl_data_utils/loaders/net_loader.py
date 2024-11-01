@@ -151,7 +151,8 @@ def get_timik1q2009_network():
 def get_artificial_nets(dir_name: str) -> dict[str, nd.MultilayerNetwork]:
     nets_dict = {}  # TODO: this function is super slow
     paths = list(Path(f"{MLN_RAW_DATA_PATH}/{dir_name}").glob("*.mpx"))
-    for path in tqdm(paths,  desc="loading networks"):
+    for path in (p_bar := tqdm(paths)):
+        p_bar.set_description_str(f"Loading network: {path.stem}")
         nets_dict[path.stem] = nd.MultilayerNetwork.from_mpx(str(path))
     return nets_dict
 

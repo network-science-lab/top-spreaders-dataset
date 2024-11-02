@@ -2,14 +2,32 @@
 
 from pathlib import Path
 
-MLN_RAW_DATA_PATH = Path(__file__).parent.parent.parent / "nsl_data_sources/raw/multi_layer_networks"
-MLN_SP_DATA_PATH = Path(__file__).parent.parent.parent / "nsl_data_sources/spreading_potentials/multi_layer_networks"
+from network_diffusion.mln.functions import (
+    betweenness,
+    closeness,
+    core_number,
+    degree,
+    neighbourhood_size,
+)
+from nsl_data_utils.loaders import voterank
+
+MLN_RAW_DATA_PATH = (
+    Path(__file__).parent.parent.parent / "nsl_data_sources/raw/multi_layer_networks"
+)
+MLN_SP_DATA_PATH = (
+    Path(__file__).parent.parent.parent
+    / "nsl_data_sources/spreading_potentials/multi_layer_networks"
+)
+MLN_CENTRALITIES_DATA_PATH = (
+    Path(__file__).parent.parent.parent
+    / "nsl_data_sources/centralities/multi_layer_networks"
+)
 
 # columns in the dataset
 ACTOR = "actor"
 EXPOSED = "exposed"
 NETWORK = "network"
-NOT_EXPOSED ="not_exposed"
+NOT_EXPOSED = "not_exposed"
 P = "p"
 PEAK_INFECTED = "peak_infected"
 PEAK_ITERATION = "peak_iteration"
@@ -23,7 +41,7 @@ AND = "AND"
 # network names
 ARTIFICIAL_ER = "artificial_er"  # a bunch of nets
 ARTIFICIAL_PA = "artificial_pa"  # a bunch of nets
-ARTIFICIAL_SMALL = "artificial_small" # a bunch of nets
+ARTIFICIAL_SMALL = "artificial_small"  # a bunch of nets
 ARXIV_NETSCIENCE_COAUTHORSHIP = "arxiv_netscience_coauthorship"
 ARXIV_NETSCIENCE_COAUTHORSHIP_MATH = "arxiv_netscience_coauthorship_math.oc"
 AUCS = "aucs"
@@ -38,3 +56,12 @@ L2_COURSE_NET_3 = "l2_course_net_3"
 LAZEGA = "lazega"
 TIMIK1Q2009 = "timik1q2009"
 TOY_NETWORK = "toy_network"
+
+CENTRALITY_FUNCTIONS = [
+    degree,
+    betweenness,
+    closeness,
+    core_number,  # related with k-shell-mln
+    neighbourhood_size,
+    voterank,
+]

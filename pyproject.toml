@@ -12,7 +12,7 @@ authors = [
     {name = "Adam Piróg"},
     {name = "Mateusz Stolarski"},
 ]
-description = "Inf-Max Data Utils"
+description = "Network Science Lab's Data Utils"
 readme = "README.md"
 license = {file = "LICENSE"}
 dynamic = ["dependencies"]

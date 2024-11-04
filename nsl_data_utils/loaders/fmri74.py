@@ -11,7 +11,9 @@ import pandas as pd
 def _parse_adj_mats(network_dir: str, binary: bool, thresh: float | None) -> dict[str, nx.Graph]:
     """Convert directory of adjacency matrix files into dictionary of edgelists."""
     layers = {}
-    for network_file in tqdm(Path(network_dir).glob("*.csv")):
+    network_paths =list(Path(network_dir).glob("*.csv"))
+    for network_file in (p_bar := tqdm(network_paths)):
+        p_bar.set_description_str(f"Loading network: {network_file.stem}")
         try:
             # read as pandas DataFrame, index=source, col=target
             layer = pd.read_csv(network_file, index_col=0)

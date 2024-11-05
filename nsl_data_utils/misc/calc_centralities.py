@@ -28,6 +28,7 @@ from nsl_data_utils.loaders.constants import (
     TOY_NETWORK,
 )
 from nsl_data_utils.loaders.net_loader import load_network
+from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map
 
 
@@ -80,7 +81,11 @@ def calculate_centralities(
     torch_network: MultilayerNetworkTorch,
 ) -> np.ndarray:
     mln_centralities: list[dict[MLNetworkActor, float]] = [
-        centrality_function(mln_network) for centrality_function in CENTRALITY_FUNCTIONS
+        centrality_function(mln_network)
+        for centrality_function in tqdm(
+            CENTRALITY_FUNCTIONS,
+            desc="Centralities",
+        )
     ]
 
     features_raw = []
@@ -106,7 +111,10 @@ def calculate_and_save(network_name: str) -> None:
         net_name=network_name,
         as_tensor=False,
     )
-    for name, mln_network in mln_networks.items():
+    for name, mln_network in tqdm(
+        mln_networks.items(),
+        desc="Network group",
+    ):
         mln_network = remove_selfloop_edges(mln_network)
         torch_network = MultilayerNetworkTorch.from_mln(mln_network)
 
@@ -142,7 +150,9 @@ def parse_args(args=None) -> Namespace:
 
 
 def main(args: Namespace) -> None:
-    processing_networks = AVAILABLE_NETWORKS if args.network == "all" else [args.network]
+    processing_networks = (
+        AVAILABLE_NETWORKS if args.network == "all" else [args.network]
+    )
 
     process_map(
         calculate_and_save,

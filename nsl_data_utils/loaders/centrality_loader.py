@@ -43,7 +43,7 @@ AVAILABLE_NETWORKS = [
 ]
 
 
-def _load_file(path: Path) -> np.ndarray:
+def _load_features_txt_file(path: Path) -> np.ndarray:
     with path.open("r") as file:
         sorted_features = np.loadtxt(
             fname=file,
@@ -64,6 +64,6 @@ def load_centralities(
 
     save_path = MLN_CENTRALITIES_DATA_PATH / network_name
     if network_type:
-        return _load_file(save_path / f"network_{network_type}.txt")
+        return _load_features_txt_file(save_path / f"network_{network_type}.txt")
     else:
-        return _load_file(save_path.parent / f"{save_path.stem}.txt")
+        return _load_features_txt_file(save_path.parent / f"{save_path.stem}.txt")

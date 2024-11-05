@@ -1,0 +1,5 @@
+outs:
+- md5: c48616c601a246385f13a38dcdf1fa55
+  size: 9150
+  hash: md5
+  path: aucs.txt

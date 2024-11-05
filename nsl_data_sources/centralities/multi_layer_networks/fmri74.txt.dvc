@@ -1,0 +1,5 @@
+outs:
+- md5: 0281aab65633c6690002bb8dafc20b85
+  size: 39600
+  hash: md5
+  path: fmri74.txt

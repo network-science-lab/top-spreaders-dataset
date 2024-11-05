@@ -1,0 +1,5 @@
+outs:
+- md5: 2eb76bb0161d919b3eb0e73c72374e91
+  size: 1650
+  hash: md5
+  path: toy_network.txt

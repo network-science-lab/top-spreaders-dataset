@@ -1,0 +1,5 @@
+outs:
+- md5: cb2fdedad8c272557c3f06e822b27e50
+  size: 36150
+  hash: md5
+  path: ckm_physicians.txt

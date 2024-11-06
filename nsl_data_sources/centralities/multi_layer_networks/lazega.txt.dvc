@@ -1,0 +1,5 @@
+outs:
+- md5: 74bc87d85386900d7937c574aba6d5ad
+  size: 10650
+  hash: md5
+  path: lazega.txt

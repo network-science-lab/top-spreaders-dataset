@@ -55,15 +55,15 @@ def _load_features_txt_file(path: Path) -> np.ndarray:
 
 def load_centralities(
     network_name: str,
-    network_type: int | None = None,
+    network_type: str,
 ) -> np.ndarray:
-    if network_name not in AVAILABLE_NETWORKS:
+    if network_type not in AVAILABLE_NETWORKS:
         raise NotImplementedError(
             f"Centralities for {network_name} are not available yet."
         )
 
-    save_path = MLN_CENTRALITIES_DATA_PATH / network_name
-    if network_type:
-        return _load_features_txt_file(save_path / f"network_{network_type}.txt")
+    save_path = MLN_CENTRALITIES_DATA_PATH / network_type
+    if network_type != network_name:
+        return _load_features_txt_file(save_path / f"{network_name}.txt")
     else:
         return _load_features_txt_file(save_path.parent / f"{save_path.stem}.txt")

@@ -8,6 +8,8 @@ import pandas as pd
 import network_diffusion as nd
 import networkx as nx
 import torch
+from bidict import bidict
+from tqdm import tqdm
 
 from nsl_data_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
@@ -30,7 +32,6 @@ from nsl_data_utils.loaders.constants import (
     TOY_NETWORK,
 )
 from nsl_data_utils.loaders.fmri74 import read_fmri74
-from tqdm import tqdm
 
 
 def _network_from_pandas(path):
@@ -163,14 +164,18 @@ def convert_to_torch(load_networks_func: Callable) -> Callable:
     def wrapper(
         *args, as_tensor: bool, **kwargs
     ) -> dict[str, nd.MultilayerNetwork] | dict[str, nd.MultilayerNetworkTorch]:
-        net_dict = load_networks_func(*args, **kwargs)
+        net_nd_dict = load_networks_func(*args, **kwargs)
         if as_tensor:
             device = "cuda:0" if torch.cuda.is_available() else "cpu"
-            return {
-                net_name: nd.MultilayerNetworkTorch.from_mln(net_graph, device=device)
-                for net_name, net_graph in net_dict.items()
-            }
-        return net_dict
+            net_pt_dict = {}
+            for net_name, net_nd in net_nd_dict.items():
+                net_pt = nd.MultilayerNetworkTorch.from_mln(net_nd, device=device)
+                net_pt.actors_map = bidict(
+                    {str(a_id): a_idx for a_id, a_idx in net_pt.actors_map.items()}
+                )
+                net_pt_dict[net_name] = net_pt
+            return net_pt_dict
+        return net_nd_dict
     return wrapper
 
 

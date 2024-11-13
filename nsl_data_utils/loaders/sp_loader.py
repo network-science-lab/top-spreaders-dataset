@@ -2,19 +2,16 @@
 
 import re
 from pathlib import Path
-from typing import Any
 
 import pandas as pd
 from nsl_data_utils.loaders.constants import (
     ACTOR,
     EXPOSED,
     MLN_SP_DATA_PATH,
-    NETWORK,
     NOT_EXPOSED,
     P,
     PEAK_INFECTED,
     PEAK_ITERATION,
-    PROTOCOL,
     SIMULATION_LENGTH,
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
@@ -137,27 +134,3 @@ def load_sp(net_name: str) -> dict[str, pd.DataFrame]:
     elif net_name == TOY_NETWORK:
         return {net_name: _get_sp(_get_csv_paths("small_real/*--net-toy_network.csv"))}
     raise AttributeError(f"Unknown network: {net_name}")
-
-
-def get_gt_data(sp_raw: pd.DataFrame, protocol: str, p: float | None, budget: int) -> list[Any]:
-    """
-    Get actors that performed the best in given spreading contitions.
-
-    :param sp_raw: DataFrame loaded with `load_sp` with raw spreading potentials for a given network
-    :param protocol: protocol of the multilayer ICM
-    :param p: probability of the multilayer ICM, if not provided probability will be discarded in
-        the process of selecting top-k actors
-    :param budget: top-k actors to return
-    :return: IDs of actors that performed the best in given contidions
-    """
-    if p:
-        sp_mean  = sp_raw.groupby(by=[NETWORK, PROTOCOL, ACTOR, P]).mean().reset_index()
-        sp_mean = sp_mean[(sp_mean[PROTOCOL] == protocol) & (sp_mean[P] == p)]
-    else:
-        sp_mean  = sp_raw.groupby(by=[NETWORK, PROTOCOL, ACTOR]).mean().reset_index()
-        sp_mean = sp_mean[sp_mean[PROTOCOL] == protocol]
-    sp_mean = sp_mean.sort_values(
-        [EXPOSED, SIMULATION_LENGTH, PEAK_INFECTED, PEAK_ITERATION],
-        ascending=[False, True, True, False]
-    )
-    return sp_mean.iloc[:budget][ACTOR].tolist()

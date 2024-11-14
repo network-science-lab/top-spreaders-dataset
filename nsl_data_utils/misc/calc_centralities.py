@@ -1,11 +1,15 @@
 """Calculate available centralities for selected multilayer networks."""
 
+import numpy as np
+import pandas as pd
+
 from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
 
-import numpy as np
-from network_diffusion.mln import MLNetworkActor, MultilayerNetworkTorch
 from network_diffusion.mln.functions import remove_selfloop_edges
-from network_diffusion.mln.mlnetwork import MultilayerNetwork
+from network_diffusion.mln.mlnetwork import MultilayerNetwork, MLNetworkActor
+from tqdm.contrib.concurrent import process_map
+from tqdm import tqdm
+
 from nsl_data_utils.loaders.constants import (
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
@@ -28,8 +32,6 @@ from nsl_data_utils.loaders.constants import (
     TOY_NETWORK,
 )
 from nsl_data_utils.loaders.net_loader import load_network
-from tqdm import tqdm
-from tqdm.contrib.concurrent import process_map
 
 
 AVAILABLE_NETWORKS = [
@@ -54,7 +56,7 @@ AVAILABLE_NETWORKS = [
 
 
 def save_centralities(
-    sorted_features: np.ndarray,
+    features_df: pd.DataFrame,
     network_name: str,
     instance_name: str,
     len_mln_networks: int,
@@ -64,22 +66,11 @@ def save_centralities(
         if len_mln_networks > 1
         else MLN_CENTRALITIES_DATA_PATH
     )
-    save_path.mkdir(
-        exist_ok=True,
-        parents=True,
-    )
-
-    with (save_path / f"{instance_name}.txt").open("w") as file:
-        np.savetxt(
-            fname=file,
-            X=sorted_features,
-        )
+    save_path.mkdir(exist_ok=True, parents=True)
+    features_df.to_csv(save_path / f"{instance_name}.csv")
 
 
-def calculate_centralities(
-    mln_network: MultilayerNetwork,
-    torch_network: MultilayerNetworkTorch,
-) -> np.ndarray:
+def calculate_centralities(mln_network: MultilayerNetwork) -> np.ndarray:
     mln_centralities: list[dict[MLNetworkActor, float]] = [
         centrality_function(mln_network)
         for centrality_function in tqdm(
@@ -88,22 +79,18 @@ def calculate_centralities(
         )
     ]
 
-    features_raw = []
-    actor_indices = []
+    features_raw = {}
     for actor in mln_network.get_actors():
-        actor_indices.append(torch_network.actors_map[actor.actor_id])
-        features_raw.append(
-            [
-                mln_centrality[actor] if actor in mln_centrality else 0
-                for mln_centrality in mln_centralities
-            ]
-        )
-    values = np.array(features_raw)
+        actor_centralities = [
+            mln_centrality[actor] if actor in mln_centrality else 0
+            for mln_centrality in mln_centralities
+        ]
+        features_raw[actor.actor_id] = actor_centralities
 
-    actor_indices = np.array(actor_indices)
-    sorted_features = values[actor_indices.argsort()]
+    features_df = pd.DataFrame(features_raw).T
+    features_df = features_df.set_axis([func.__name__ for func in CENTRALITY_FUNCTIONS], axis=1)
 
-    return sorted_features
+    return features_df
 
 
 def calculate_and_save(network_name: str) -> None:
@@ -116,15 +103,9 @@ def calculate_and_save(network_name: str) -> None:
         desc="Network group",
     ):
         mln_network = remove_selfloop_edges(mln_network)
-        torch_network = MultilayerNetworkTorch.from_mln(mln_network)
-
-        sorted_features = calculate_centralities(
-            mln_network=mln_network,
-            torch_network=torch_network,
-        )
-
+        features_df = calculate_centralities(mln_network=mln_network)
         save_centralities(
-            sorted_features=sorted_features,
+            features_df=features_df,
             network_name=network_name,
             instance_name=name,
             len_mln_networks=len(mln_networks),
@@ -163,7 +144,7 @@ def main(args: Namespace) -> None:
 
 
 def cli() -> None:
-    args = parse_args()
+    args = parse_args(["--network", "artificial_small"])
     print(args)
     main(args)
 

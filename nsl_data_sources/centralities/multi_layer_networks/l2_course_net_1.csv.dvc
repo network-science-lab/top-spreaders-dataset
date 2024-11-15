@@ -1,0 +1,5 @@
+outs:
+- md5: fe45e52cc17b640a8547abb70c582c24
+  size: 2550
+  hash: md5
+  path: l2_course_net_1.csv

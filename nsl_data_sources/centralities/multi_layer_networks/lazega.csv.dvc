@@ -1,0 +1,5 @@
+outs:
+- md5: ec9b2d70f1f1ee11faef54d1e6e11cde
+  size: 4516
+  hash: md5
+  path: lazega.csv

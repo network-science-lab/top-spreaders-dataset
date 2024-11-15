@@ -1,0 +1,5 @@
+outs:
+- md5: b65bcc9654f229d8ccc8f975cbdaae79
+  size: 85124
+  hash: md5
+  path: arxiv_netscience_coauthorship_math.oc.csv

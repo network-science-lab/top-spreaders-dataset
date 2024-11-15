@@ -1,0 +1,5 @@
+outs:
+- md5: 9240313c52ec78847e6107982614df9d
+  size: 14982
+  hash: md5
+  path: ckm_physicians.csv

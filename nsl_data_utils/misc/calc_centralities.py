@@ -144,7 +144,7 @@ def main(args: Namespace) -> None:
 
 
 def cli() -> None:
-    args = parse_args(["--network", "artificial_small"])
+    args = parse_args()
     print(args)
     main(args)
 

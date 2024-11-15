@@ -1,0 +1,5 @@
+outs:
+- md5: 0b5ed2c53045eecda5588b27628a9dfc
+  size: 17978
+  hash: md5
+  path: fmri74.csv

@@ -1,6 +1,6 @@
-from pathlib import Path
+"""Loader for the precomputed centralities."""
 
-import numpy as np
+import pandas as pd
 from nsl_data_utils.loaders.constants import (
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
@@ -43,27 +43,16 @@ AVAILABLE_NETWORKS = [
 ]
 
 
-def _load_features_txt_file(path: Path) -> np.ndarray:
-    with path.open("r") as file:
-        sorted_features = np.loadtxt(
-            fname=file,
-            dtype=float,
-        )
-
-    return sorted_features
-
-
 def load_centralities(
     network_name: str,
     network_type: str,
-) -> np.ndarray:
+) -> pd.DataFrame:
     if network_type not in AVAILABLE_NETWORKS:
-        raise NotImplementedError(
-            f"Centralities for {network_name} are not available yet."
-        )
-
+        raise NotImplementedError(f"Centralities for {network_name} are not available yet.")
     save_path = MLN_CENTRALITIES_DATA_PATH / network_type
     if network_type != network_name:
-        return _load_features_txt_file(save_path / f"{network_name}.txt")
+        centralities_df = pd.read_csv(save_path / f"{network_name}.csv", index_col=0)
     else:
-        return _load_features_txt_file(save_path.parent / f"{save_path.stem}.txt")
+        centralities_df = pd.read_csv(save_path.parent / f"{save_path.stem}.csv", index_col=0)
+    centralities_df.index = centralities_df.index.astype(str)
+    return centralities_df

@@ -1,0 +1,5 @@
+outs:
+- md5: 3de44dc5b0ad0e035bf34acdf77a3197
+  size: 3818
+  hash: md5
+  path: aucs.csv

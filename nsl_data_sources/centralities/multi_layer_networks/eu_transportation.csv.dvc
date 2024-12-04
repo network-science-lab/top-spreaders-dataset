@@ -1,0 +1,5 @@
+outs:
+- md5: f3123f61f26bfed2906d8bf30524704a
+  size: 23420
+  hash: md5
+  path: eu_transportation.csv

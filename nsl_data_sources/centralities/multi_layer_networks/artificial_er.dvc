@@ -1,6 +1,6 @@
 outs:
-- md5: 35f5be63e9981485e14eb86e4e112abf.dir
-  size: 8372850
+- md5: 89c6bc6869207a511da747329d4c4993.dir
+  size: 3648630
   nfiles: 100
   hash: md5
   path: artificial_er

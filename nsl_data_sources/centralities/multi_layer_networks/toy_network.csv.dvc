@@ -1,0 +1,5 @@
+outs:
+- md5: 0414996b37432264fc600ce9a2b19ad1
+  size: 658
+  hash: md5
+  path: toy_network.csv

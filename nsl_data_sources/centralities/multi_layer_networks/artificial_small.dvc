@@ -1,6 +1,6 @@
 outs:
-- md5: fa0fe5447808ef7c47b977c7e1cc5ab1.dir
-  size: 1200000
+- md5: 411a6ea7e90cecb3b6016be46fc9363d.dir
+  size: 502218
   nfiles: 8
   hash: md5
   path: artificial_small

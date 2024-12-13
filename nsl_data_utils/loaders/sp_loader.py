@@ -24,6 +24,7 @@ from nsl_data_utils.loaders.constants import (
     EU_TRANSPORTATION,
     EU_TRANSPORT_KLM,
     FMRI74,
+    L2_COURSE,
     L2_COURSE_NET_1,
     L2_COURSE_NET_2,
     L2_COURSE_NET_3,
@@ -93,44 +94,79 @@ def _sp_not_implemented():
     raise NotImplementedError(f"Spreading potentials have been not prepared yet!")
 
 
-def load_sp(net_name: str) -> dict[str, pd.DataFrame]:
+def load_sp_paths(net_type: str, net_name: str) -> list[Path]:
     """Load spreading potentials dataset for given network."""
-    if net_name == ARTIFICIAL_ER:
-        return _get_sp_bulk(ARTIFICIAL_ER)
-    elif net_name == ARTIFICIAL_PA:
-        return _get_sp_bulk(ARTIFICIAL_PA)
-    elif net_name == ARTIFICIAL_SMALL:
-        return _get_sp_bulk(ARTIFICIAL_SMALL)
-    elif net_name == FMRI74:
-        return {net_name: _get_sp(_get_csv_paths(f"fmri74/*.csv"))}
-    elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
-        csv_paths = [
-            f for f in Path(f"{MLN_SP_DATA_PATH}/arxiv_netscience_coauthorship").rglob('**/*.csv') 
-            if 'math.oc' not in f.parts
-        ]
-        return {net_name: _get_sp(csv_paths)}
-    elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
-        return {net_name: _get_sp(_get_csv_paths(f"arxiv_netscience_coauthorship/math.oc/*.csv"))}
-    elif net_name == AUCS:
-        return {net_name: _get_sp(_get_csv_paths(f"small_real/*--net-aucs.csv"))}
-    elif net_name == CANNES:
+    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL}:
+        return _get_csv_paths(f"{net_type}/*--net-{net_name}.csv")
+    elif net_type == FMRI74:
+        return _get_csv_paths(f"fmri74/*.csv")
+    elif net_type == ARXIV_NETSCIENCE_COAUTHORSHIP:
+        if net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
+            return [
+                f for f in Path(f"{MLN_SP_DATA_PATH}/arxiv_netscience_coauthorship").rglob("**/*.csv") 
+                if "math.oc" not in f.parts
+            ]
+        elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
+            return _get_csv_paths(f"arxiv_netscience_coauthorship/math.oc/*.csv")
+        raise AttributeError(f"Unknown network name: {net_name} for {net_type}")
+    elif net_type == AUCS:
+        return _get_csv_paths(f"small_real/*--net-aucs.csv")
+    elif net_type == CANNES:
         _sp_not_implemented()
-    elif net_name == CKM_PHYSICIANS:
-        return {net_name: _get_sp(_get_csv_paths("small_real/*--net-ckm_physicians.csv"))}
-    elif net_name == EU_TRANSPORTATION:
-        return {net_name: _get_sp(_get_csv_paths("small_real/*--net-eu_transportation.csv"))}
-    elif net_name == EU_TRANSPORT_KLM:
-        return {net_name: _get_sp(_get_csv_paths("small_real/*--net-eu_transport_klm.csv"))}
-    elif net_name == L2_COURSE_NET_1:
-        return {net_name: _get_sp(_get_csv_paths("l2_course_net/*--net-l2_course_net_1.csv"))}
-    elif net_name == L2_COURSE_NET_2:
-        return {net_name: _get_sp(_get_csv_paths("l2_course_net/*--net-l2_course_net_2.csv"))}
-    elif net_name == L2_COURSE_NET_3:
-        return {net_name: _get_sp(_get_csv_paths("l2_course_net/*--net-l2_course_net_3.csv"))}
-    elif net_name == LAZEGA:
-        return {net_name: _get_sp(_get_csv_paths("small_real/*--net-lazega.csv"))}
-    elif net_name == TIMIK1Q2009:
-        return {net_name: _get_sp(_get_csv_paths("timik1q2009/**/*.csv"))}
-    elif net_name == TOY_NETWORK:
-        return {net_name: _get_sp(_get_csv_paths("small_real/*--net-toy_network.csv"))}
-    raise AttributeError(f"Unknown network: {net_name}")
+    elif net_type == CKM_PHYSICIANS:
+        return _get_csv_paths("small_real/*--net-ckm_physicians.csv")
+    elif net_type == EU_TRANSPORTATION:
+        return _get_csv_paths(f"small_real/*--net-{net_name}.csv")
+    elif net_type == L2_COURSE:
+        return _get_csv_paths(f"l2_course_net/*--net-{net_name}.csv")
+    elif net_type == LAZEGA:
+        return _get_csv_paths("small_real/*--net-lazega.csv")
+    elif net_type == TIMIK1Q2009:
+        return _get_csv_paths("timik1q2009/**/*.csv")
+    elif net_type == TOY_NETWORK:
+        return _get_csv_paths("small_real/*--net-toy_network.csv")
+    raise AttributeError(f"Unknown network: {net_type}")
+
+
+# TODO: deprecated or its interface needs to be aligned
+# def load_sp(net_name: str) -> dict[str, pd.DataFrame]:
+#     """Load spreading potentials dataset for given network."""
+#     if net_name == ARTIFICIAL_ER:
+#         return _get_sp_bulk(ARTIFICIAL_ER)
+#     elif net_name == ARTIFICIAL_PA:
+#         return _get_sp_bulk(ARTIFICIAL_PA)
+#     elif net_name == ARTIFICIAL_SMALL:
+#         return _get_sp_bulk(ARTIFICIAL_SMALL)
+#     elif net_name == FMRI74:
+#         return {net_name: _get_sp(_get_csv_paths(f"fmri74/*.csv"))}
+#     elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
+#         csv_paths = [
+#             f for f in Path(f"{MLN_SP_DATA_PATH}/arxiv_netscience_coauthorship").rglob('**/*.csv') 
+#             if 'math.oc' not in f.parts
+#         ]
+#         return {net_name: _get_sp(csv_paths)}
+#     elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
+#         return {net_name: _get_sp(_get_csv_paths(f"arxiv_netscience_coauthorship/math.oc/*.csv"))}
+#     elif net_name == AUCS:
+#         return {net_name: _get_sp(_get_csv_paths(f"small_real/*--net-aucs.csv"))}
+#     elif net_name == CANNES:
+#         _sp_not_implemented()
+#     elif net_name == CKM_PHYSICIANS:
+#         return {net_name: _get_sp(_get_csv_paths("small_real/*--net-ckm_physicians.csv"))}
+#     elif net_name == EU_TRANSPORTATION:
+#         return {net_name: _get_sp(_get_csv_paths("small_real/*--net-eu_transportation.csv"))}
+#     elif net_name == EU_TRANSPORT_KLM:
+#         return {net_name: _get_sp(_get_csv_paths("small_real/*--net-eu_transport_klm.csv"))}
+#     elif net_name == L2_COURSE_NET_1:
+#         return {net_name: _get_sp(_get_csv_paths("l2_course_net/*--net-l2_course_net_1.csv"))}
+#     elif net_name == L2_COURSE_NET_2:
+#         return {net_name: _get_sp(_get_csv_paths("l2_course_net/*--net-l2_course_net_2.csv"))}
+#     elif net_name == L2_COURSE_NET_3:
+#         return {net_name: _get_sp(_get_csv_paths("l2_course_net/*--net-l2_course_net_3.csv"))}
+#     elif net_name == LAZEGA:
+#         return {net_name: _get_sp(_get_csv_paths("small_real/*--net-lazega.csv"))}
+#     elif net_name == TIMIK1Q2009:
+#         return {net_name: _get_sp(_get_csv_paths("timik1q2009/**/*.csv"))}
+#     elif net_name == TOY_NETWORK:
+#         return {net_name: _get_sp(_get_csv_paths("small_real/*--net-toy_network.csv"))}
+#     raise AttributeError(f"Unknown network: {net_name}")

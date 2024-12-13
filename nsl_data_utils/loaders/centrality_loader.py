@@ -1,5 +1,6 @@
 """Loader for the precomputed centralities."""
 
+from pathlib import Path
 import pandas as pd
 from nsl_data_utils.loaders.constants import (
     ARTIFICIAL_ER,
@@ -43,7 +44,7 @@ AVAILABLE_NETWORKS = [
 ]
 
 
-def load_centralities(
+def load_centralities(  # TODO: refactor
     network_name: str,
     network_type: str,
 ) -> pd.DataFrame:
@@ -56,3 +57,13 @@ def load_centralities(
         centralities_df = pd.read_csv(save_path.parent / f"{save_path.stem}.csv", index_col=0)
     centralities_df.index = centralities_df.index.astype(str)
     return centralities_df
+
+
+
+def load_centralities_path(network_type: str, network_name: str) -> Path:
+    if network_type not in AVAILABLE_NETWORKS:
+        raise NotImplementedError(f"Centralities for {network_name} are not available yet.")
+    save_path = MLN_CENTRALITIES_DATA_PATH / network_type
+    if network_type != network_name:
+        return save_path / f"{network_name}.csv"
+    return save_path.parent / f"{save_path.stem}.csv"

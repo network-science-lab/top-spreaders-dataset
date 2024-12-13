@@ -49,7 +49,7 @@ def read_csv(file_path: Path) -> pd.DataFrame:
     return file_df
 
 
-def _get_sp(csv_paths: list[str]) -> pd.DataFrame:
+def load_sp(csv_paths: list[str]) -> pd.DataFrame:
     """Read spreading potentials stored in files indicated by given regex."""
     raw_csvs = []
     for _, file_path in enumerate(csv_paths):
@@ -86,7 +86,7 @@ def _get_sp_bulk(net_group_name: str) -> dict[str, pd.DataFrame]:
     csv_paths = _sort_csv_paths(f"{net_group_name}/*.csv")
     for net_name in (p_bar := tqdm(csv_paths)):
         p_bar.set_description_str(f"Loading SP for: {net_name}")
-        sp_dict[net_name] = _get_sp(csv_paths[net_name])
+        sp_dict[net_name] = load_sp(csv_paths[net_name])
     return sp_dict
 
 

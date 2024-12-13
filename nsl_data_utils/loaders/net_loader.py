@@ -9,7 +9,6 @@ import network_diffusion as nd
 import networkx as nx
 import torch
 from bidict import bidict
-from tqdm import tqdm
 
 from nsl_data_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
@@ -150,13 +149,10 @@ def get_timik1q2009_network():
     return nd.MultilayerNetwork.from_nx_layers(layer_graphs, layer_names)
 
 
-def get_artificial_nets(dir_name: str) -> dict[str, nd.MultilayerNetwork]: # TODO
-    nets_dict = {}  # TODO: this function is super slow
-    paths = list(Path(f"{MLN_RAW_DATA_PATH}/{dir_name}").glob("*.mpx"))
-    for path in (p_bar := tqdm(paths)):
-        p_bar.set_description_str(f"Loading network: {path.stem}")
-        nets_dict[path.stem] = nd.MultilayerNetwork.from_mpx(str(path))
-    return nets_dict
+def get_artificial_net(net_type: str, net_name: str) -> dict[str, nd.MultilayerNetwork]:
+    net_path = Path(f"{MLN_RAW_DATA_PATH}/{net_type}/{net_name}.mpx")
+    assert net_path.exists(), f"{net_type}, {net_name}"
+    return nd.MultilayerNetwork.from_mpx(str(net_path))
 
 
 def _get_artificial_names(net_type: str) -> list[str]:
@@ -230,47 +226,43 @@ def convert_to_torch(load_networks_func: Callable) -> Callable:
 
 @convert_to_torch
 def load_network(net_type: str, net_name: str) -> nd.MultilayerNetwork:
-    if net_type == ARTIFICIAL_ER:
-        return get_artificial_nets("artificial_er", net_name)
-    elif net_type == ARTIFICIAL_PA:
-        return get_artificial_nets("artificial_pa", net_name)
-    elif net_type == ARTIFICIAL_SMALL:
-        nets_dict = get_artificial_nets("artificial_small", net_name)
-        nets_dict["er1"] = nd.MultilayerNetwork.from_nx_layers([nets_dict["er5"]["l2"]], ["l2"])
-        nets_dict["sf1"] = nd.MultilayerNetwork.from_nx_layers([nets_dict["sf5"]["l3"]], ["l3"])
-        return nets_dict
+    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL}:
+        net = get_artificial_net(net_type, net_name)
     elif net_type == FMRI74:
-        return {net_type: read_fmri74(f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", True, 0.5)}
+        net = read_fmri74(f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", True, 0.5)
     elif net_type == ARXIV_NETSCIENCE_COAUTHORSHIP:
-        return {net_type: get_arxiv_network()}
-    elif net_type == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
-        return {net_type: get_arxiv_network(["math.OC"])}
+        if net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
+            net = get_arxiv_network()
+        elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
+            net = get_arxiv_network(["math.OC"])
     elif net_type == AUCS:
-        return {net_type: get_aucs_network()}
+        net = get_aucs_network()
     elif net_type == CANNES:
-        return {net_type: get_cannes_network()}
+        net = get_cannes_network()
     elif net_type == CKM_PHYSICIANS:
-        return {net_type: get_ckm_physicians_network()}
+        net = get_ckm_physicians_network()
     elif net_type == EU_TRANSPORTATION:
-        return {net_type: get_eu_transportation_network()}
-    elif net_type == EU_TRANSPORT_KLM:
-        return {net_type: get_eu_transportation_network(["KLM"])}
-    elif net_type == L2_COURSE_NET_1:
+        if net_name == EU_TRANSPORTATION:
+            net = get_eu_transportation_network()
+        elif net_name == EU_TRANSPORT_KLM:
+            net = get_eu_transportation_network(["KLM"])
+    elif net_type == L2_COURSE:
         net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
-        return {L2_COURSE_NET_1: net.snaps[0]}
-    elif net_type == L2_COURSE_NET_2:
-        net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
-        return {L2_COURSE_NET_2: net.snaps[1]}
-    elif net_type == L2_COURSE_NET_3:
-        net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
-        return {L2_COURSE_NET_3: net.snaps[2]}
+        if net_name == L2_COURSE_NET_1:
+            net = net.snaps[0]
+        elif net_name == L2_COURSE_NET_2:
+            net = net.snaps[1]
+        elif net_name == L2_COURSE_NET_3:
+            net = net.snaps[2]
     elif net_type == LAZEGA:
-        return {net_type: get_lazega_network()}
+        net = get_lazega_network()
     elif net_type == TIMIK1Q2009:
-        return {net_type: get_timik1q2009_network()}
+        net = get_timik1q2009_network()
     elif net_type == TOY_NETWORK:
-        return {net_type: nd.mln.functions.get_toy_network_piotr()}
-    raise AttributeError(f"Unknown network: {net_type}")
+        net = nd.mln.functions.get_toy_network_piotr()
+    else:
+        raise AttributeError(f"Unknown network: {net_type}")
+    return nd.mln.functions.remove_selfloop_edges(net)
 
 
 # TODO: deprecated or its interface needs to be aligned

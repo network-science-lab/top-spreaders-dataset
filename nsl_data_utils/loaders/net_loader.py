@@ -217,8 +217,7 @@ def convert_to_torch(load_networks_func: Callable) -> Callable:
         net_nd = load_networks_func(*args, **kwargs)
         if not as_tensor:
             return net_nd
-        device = "cuda:0" if torch.cuda.is_available() else "cpu"
-        net_pt = nd.MultilayerNetworkTorch.from_mln(net_nd, device=device)
+        net_pt = nd.MultilayerNetworkTorch.from_mln(net_nd)
         net_pt.actors_map = bidict({str(a_id): a_idx for a_id, a_idx in net_pt.actors_map.items()})
         return net_pt
     return wrapper

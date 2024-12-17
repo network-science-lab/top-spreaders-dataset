@@ -36,13 +36,6 @@ AVAILABLE_NETWORK_TYPES = [
 
 
 def load_centralities(csv_path: Path) -> pd.DataFrame:
-    # if network_type not in AVAILABLE_NETWORK_TYPES:
-    #     raise NotImplementedError(f"Centralities for {network_name} are not available yet.")
-    # save_path = MLN_CENTRALITIES_DATA_PATH / network_type
-    # if network_type != network_name:
-    #     centralities_df = pd.read_csv(save_path / f"{network_name}.csv", index_col=0)
-    # else:
-    #     centralities_df = pd.read_csv(save_path.parent / f"{save_path.stem}.csv", index_col=0)
     centralities_df = pd.read_csv(csv_path, index_col=0)
     centralities_df.index = centralities_df.index.astype(str)
     return centralities_df

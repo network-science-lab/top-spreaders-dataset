@@ -7,9 +7,7 @@ from typing import Callable
 import pandas as pd
 import network_diffusion as nd
 import networkx as nx
-import torch
 from bidict import bidict
-from tqdm import tqdm
 
 from nsl_data_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
@@ -24,6 +22,7 @@ from nsl_data_utils.loaders.constants import (
     EU_TRANSPORTATION,
     EU_TRANSPORT_KLM,
     FMRI74,
+    L2_COURSE,
     L2_COURSE_NET_1,
     L2_COURSE_NET_2,
     L2_COURSE_NET_3,
@@ -149,76 +148,95 @@ def get_timik1q2009_network():
     return nd.MultilayerNetwork.from_nx_layers(layer_graphs, layer_names)
 
 
-def get_artificial_nets(dir_name: str) -> dict[str, nd.MultilayerNetwork]:
-    nets_dict = {}  # TODO: this function is super slow
-    paths = list(Path(f"{MLN_RAW_DATA_PATH}/{dir_name}").glob("*.mpx"))
-    for path in (p_bar := tqdm(paths)):
-        p_bar.set_description_str(f"Loading network: {path.stem}")
-        nets_dict[path.stem] = nd.MultilayerNetwork.from_mpx(str(path))
-    return nets_dict
+def get_artificial_net(net_type: str, net_name: str) -> dict[str, nd.MultilayerNetwork]:
+    net_path = Path(f"{MLN_RAW_DATA_PATH}/{net_type}/{net_name}.mpx")
+    assert net_path.exists(), f"{net_type}, {net_name}"
+    return nd.MultilayerNetwork.from_mpx(str(net_path))
+
+
+def _get_artificial_names(net_type: str) -> list[str]:
+    names_list = []
+    paths = list(Path(f"{MLN_RAW_DATA_PATH}/{net_type}").glob("*.mpx"))
+    for path in paths:
+        names_list.append(path.stem)
+    return names_list
+
+
+def load_net_names(net_type: str) -> list[str]:
+    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL}:
+        return _get_artificial_names(net_type)
+    elif net_type == FMRI74:
+        return [FMRI74]
+    elif net_type == ARXIV_NETSCIENCE_COAUTHORSHIP:
+        return [ARXIV_NETSCIENCE_COAUTHORSHIP, ARXIV_NETSCIENCE_COAUTHORSHIP_MATH]
+    elif net_type == AUCS:
+        return [AUCS]
+    elif net_type == CANNES:
+        return [CANNES]
+    elif net_type == CKM_PHYSICIANS:
+        return [CKM_PHYSICIANS]
+    elif net_type == EU_TRANSPORTATION:
+        return [EU_TRANSPORT_KLM, EU_TRANSPORTATION]
+    elif net_type == L2_COURSE:
+        return [L2_COURSE_NET_1, L2_COURSE_NET_2, L2_COURSE_NET_3]
+    elif net_type == LAZEGA:
+        return [LAZEGA]
+    elif net_type == TIMIK1Q2009:
+        return [TIMIK1Q2009]
+    elif net_type == TOY_NETWORK:
+        return [TOY_NETWORK]
+    raise AttributeError(f"Unknown network type: {net_type}")
 
 
 def convert_to_torch(load_networks_func: Callable) -> Callable:
     """Decorate loader function so that it can convert the network on the fly to the tensor repr."""
     @wraps(load_networks_func)
-    def wrapper(
-        *args, as_tensor: bool, **kwargs
-    ) -> dict[str, nd.MultilayerNetwork] | dict[str, nd.MultilayerNetworkTorch]:
-        net_nd_dict = load_networks_func(*args, **kwargs)
-        if as_tensor:
-            device = "cuda:0" if torch.cuda.is_available() else "cpu"
-            net_pt_dict = {}
-            for net_name, net_nd in net_nd_dict.items():
-                net_pt = nd.MultilayerNetworkTorch.from_mln(net_nd, device=device)
-                net_pt.actors_map = bidict(
-                    {str(a_id): a_idx for a_id, a_idx in net_pt.actors_map.items()}
-                )
-                net_pt_dict[net_name] = net_pt
-            return net_pt_dict
-        return net_nd_dict
+    def wrapper(*args, as_tensor: bool, **kwargs) -> nd.MultilayerNetwork | nd.MultilayerNetworkTorch:
+        net_nd = load_networks_func(*args, **kwargs)
+        if not as_tensor:
+            return net_nd
+        net_pt = nd.MultilayerNetworkTorch.from_mln(net_nd)
+        net_pt.actors_map = bidict({str(a_id): a_idx for a_id, a_idx in net_pt.actors_map.items()})
+        return net_pt
     return wrapper
 
 
 @convert_to_torch
-def load_network(net_name: str) -> dict[str, nd.MultilayerNetwork]:
-    if net_name == ARTIFICIAL_ER:
-        return get_artificial_nets("artificial_er")
-    elif net_name == ARTIFICIAL_PA:
-        return get_artificial_nets("artificial_pa")
-    elif net_name == ARTIFICIAL_SMALL:
-        nets_dict = get_artificial_nets("artificial_small")
-        nets_dict["er1"] = nd.MultilayerNetwork.from_nx_layers([nets_dict["er5"]["l2"]], ["l2"])
-        nets_dict["sf1"] = nd.MultilayerNetwork.from_nx_layers([nets_dict["sf5"]["l3"]], ["l3"])
-        return nets_dict
-    elif net_name == FMRI74:
-        return {net_name: read_fmri74(f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", True, 0.5)}
-    elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
-        return {net_name: get_arxiv_network()}
-    elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
-        return {net_name: get_arxiv_network(["math.OC"])}
-    elif net_name == AUCS:
-        return {net_name: get_aucs_network()}
-    elif net_name == CANNES:
-        return {net_name: get_cannes_network()}
-    elif net_name == CKM_PHYSICIANS:
-        return {net_name: get_ckm_physicians_network()}
-    elif net_name == EU_TRANSPORTATION:
-        return {net_name: get_eu_transportation_network()}
-    elif net_name == EU_TRANSPORT_KLM:
-        return {net_name: get_eu_transportation_network(["KLM"])}
-    elif net_name == L2_COURSE_NET_1:
+def load_network(net_type: str, net_name: str) -> nd.MultilayerNetwork:
+    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL}:
+        net = get_artificial_net(net_type, net_name)
+    elif net_type == FMRI74:
+        net = read_fmri74(f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", True, 0.5)
+    elif net_type == ARXIV_NETSCIENCE_COAUTHORSHIP:
+        if net_name == ARXIV_NETSCIENCE_COAUTHORSHIP:
+            net = get_arxiv_network()
+        elif net_name == ARXIV_NETSCIENCE_COAUTHORSHIP_MATH:
+            net = get_arxiv_network(["math.OC"])
+    elif net_type == AUCS:
+        net = get_aucs_network()
+    elif net_type == CANNES:
+        net = get_cannes_network()
+    elif net_type == CKM_PHYSICIANS:
+        net = get_ckm_physicians_network()
+    elif net_type == EU_TRANSPORTATION:
+        if net_name == EU_TRANSPORTATION:
+            net = get_eu_transportation_network()
+        elif net_name == EU_TRANSPORT_KLM:
+            net = get_eu_transportation_network(["KLM"])
+    elif net_type == L2_COURSE:
         net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
-        return {L2_COURSE_NET_1: net.snaps[0]}
-    elif net_name == L2_COURSE_NET_2:
-        net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
-        return {L2_COURSE_NET_2: net.snaps[1]}
-    elif net_name == L2_COURSE_NET_3:
-        net = nd.tpn.get_l2_course_net(node_features=True, edge_features=True, directed=False)
-        return {L2_COURSE_NET_3: net.snaps[2]}
-    elif net_name == LAZEGA:
-        return {net_name: get_lazega_network()}
-    elif net_name == TIMIK1Q2009:
-        return {net_name: get_timik1q2009_network()}
-    elif net_name == TOY_NETWORK:
-        return {net_name: nd.mln.functions.get_toy_network_piotr()}
-    raise AttributeError(f"Unknown network: {net_name}")
+        if net_name == L2_COURSE_NET_1:
+            net = net.snaps[0]
+        elif net_name == L2_COURSE_NET_2:
+            net = net.snaps[1]
+        elif net_name == L2_COURSE_NET_3:
+            net = net.snaps[2]
+    elif net_type == LAZEGA:
+        net = get_lazega_network()
+    elif net_type == TIMIK1Q2009:
+        net = get_timik1q2009_network()
+    elif net_type == TOY_NETWORK:
+        net = nd.mln.functions.get_toy_network_piotr()
+    else:
+        raise AttributeError(f"Unknown network: {net_type}")
+    return nd.mln.functions.remove_selfloop_edges(net)

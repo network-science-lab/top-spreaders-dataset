@@ -1,0 +1,6 @@
+outs:
+- md5: 92c23cb4f5f586c9103143e024908354.dir
+  size: 5258904
+  nfiles: 40
+  hash: md5
+  path: fmri74

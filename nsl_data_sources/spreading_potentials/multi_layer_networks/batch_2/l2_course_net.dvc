@@ -1,0 +1,6 @@
+outs:
+- md5: dd517b1af9c5a97d293d16347163c33b.dir
+  size: 2133994
+  nfiles: 120
+  hash: md5
+  path: l2_course_net

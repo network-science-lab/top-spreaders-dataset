@@ -1,0 +1,6 @@
+outs:
+- md5: c4692133feabeb297ece785850742ca2.dir
+  size: 424791777
+  nfiles: 80
+  hash: md5
+  path: arxiv_netscience_coauthorship

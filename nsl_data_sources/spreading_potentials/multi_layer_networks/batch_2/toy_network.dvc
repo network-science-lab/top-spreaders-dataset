@@ -1,0 +1,6 @@
+outs:
+- md5: f8093645bb9744f7f9973d01949e7dff.dir
+  size: 173988
+  nfiles: 40
+  hash: md5
+  path: toy_network

@@ -42,6 +42,7 @@ AND = "AND"
 ARTIFICIAL_ER = "artificial_er"  # a bunch of nets
 ARTIFICIAL_PA = "artificial_pa"  # a bunch of nets
 ARTIFICIAL_SMALL = "artificial_small"  # a bunch of nets
+ARTIFICIAL_RANDOM = "artificial_random"  # a bunch of nets
 ARXIV_NETSCIENCE_COAUTHORSHIP = "arxiv_netscience_coauthorship"
 ARXIV_NETSCIENCE_COAUTHORSHIP_MATH = "arxiv_netscience_coauthorship_math.oc"
 AUCS = "aucs"

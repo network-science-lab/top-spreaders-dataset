@@ -15,6 +15,7 @@ from nsl_data_utils.loaders.constants import (
     SIMULATION_LENGTH,
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
+    ARTIFICIAL_RANDOM,
     ARTIFICIAL_SMALL,
     ARXIV_NETSCIENCE_COAUTHORSHIP,
     ARXIV_NETSCIENCE_COAUTHORSHIP_MATH,
@@ -81,7 +82,7 @@ def _sp_not_implemented():
 
 def load_sp_paths(net_type: str, net_name: str) -> list[Path]:
     """Load spreading potentials dataset for given network."""
-    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL}:
+    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL, ARTIFICIAL_RANDOM}:
         return _get_csv_paths(f"{net_type}/*--net-{net_name}.csv")
     elif net_type == FMRI74:
         return _get_csv_paths(f"fmri74/*.csv")

@@ -1,0 +1,6 @@
+outs:
+- md5: 2b23208744061df4c5bab415d75fdc4e.dir
+  size: 288462
+  nfiles: 20
+  hash: md5
+  path: artificial_random

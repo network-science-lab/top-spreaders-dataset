@@ -13,6 +13,7 @@ from nsl_data_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
+    ARTIFICIAL_RANDOM,
     ARTIFICIAL_SMALL,
     ARXIV_NETSCIENCE_COAUTHORSHIP,
     ARXIV_NETSCIENCE_COAUTHORSHIP_MATH,
@@ -163,7 +164,7 @@ def _get_artificial_names(net_type: str) -> list[str]:
 
 
 def load_net_names(net_type: str) -> list[str]:
-    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL}:
+    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL, ARTIFICIAL_RANDOM}:
         return _get_artificial_names(net_type)
     elif net_type == FMRI74:
         return [FMRI74]
@@ -203,7 +204,7 @@ def convert_to_torch(load_networks_func: Callable) -> Callable:
 
 @convert_to_torch
 def load_network(net_type: str, net_name: str) -> nd.MultilayerNetwork:
-    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL}:
+    if net_type in {ARTIFICIAL_ER, ARTIFICIAL_PA, ARTIFICIAL_SMALL, ARTIFICIAL_RANDOM}:
         net = get_artificial_net(net_type, net_name)
     elif net_type == FMRI74:
         net = read_fmri74(f"{MLN_RAW_DATA_PATH}/CONTROL_fmt", True, 0.5)

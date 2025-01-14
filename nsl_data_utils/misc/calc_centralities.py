@@ -13,6 +13,7 @@ from tqdm import tqdm
 from nsl_data_utils.loaders.constants import (
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
+    ARTIFICIAL_RANDOM,
     ARTIFICIAL_SMALL,
     ARXIV_NETSCIENCE_COAUTHORSHIP,
     ARXIV_NETSCIENCE_COAUTHORSHIP_MATH,
@@ -31,12 +32,13 @@ from nsl_data_utils.loaders.constants import (
     TIMIK1Q2009,
     TOY_NETWORK,
 )
-from nsl_data_utils.loaders.net_loader import load_network
+from nsl_data_utils.loaders.net_loader import load_network, load_net_names
 
 
 AVAILABLE_NETWORKS = [
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
+    ARTIFICIAL_RANDOM,
     ARTIFICIAL_SMALL,
     ARXIV_NETSCIENCE_COAUTHORSHIP,
     ARXIV_NETSCIENCE_COAUTHORSHIP_MATH,
@@ -93,11 +95,20 @@ def calculate_centralities(mln_network: MultilayerNetwork) -> np.ndarray:
     return features_df
 
 
+def _get_networks(net_type: str) -> dict[str, MultilayerNetwork]:
+    net_names = load_net_names(net_type)
+    return {
+        net_name: load_network(
+            net_type=net_type,
+            net_name=net_name,
+            as_tensor=False,
+        )
+        for net_name in net_names
+    }
+
+
 def calculate_and_save(network_name: str) -> None:
-    mln_networks = load_network(
-        net_name=network_name,
-        as_tensor=False,
-    )
+    mln_networks = _get_networks(network_name)
     for name, mln_network in tqdm(
         mln_networks.items(),
         desc="Network group",

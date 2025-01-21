@@ -161,6 +161,7 @@ cython_debug/
 
 # Custom
 prototyping/
+eda
 
 # dvc
 /.dvc/config.local

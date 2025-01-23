@@ -8,10 +8,12 @@ from nsl_data_utils.loaders.constants import (
     ACTOR,
     EXPOSED,
     MLN_SP_DATA_PATH,
+    NETWORK,
     NOT_EXPOSED,
     P,
     PEAK_INFECTED,
     PEAK_ITERATION,
+    PROTOCOL,
     SIMULATION_LENGTH,
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
@@ -36,26 +38,36 @@ def get_simulation_params(file_name: Path) -> tuple[str, str, str]:
 
 
 def read_csv(file_path: Path) -> pd.DataFrame:
+    dtype_mapping = {
+        SIMULATION_LENGTH: "float64",
+        EXPOSED: "float64",
+        NOT_EXPOSED: "float64",
+        PEAK_INFECTED: "float64",
+        PEAK_ITERATION: "float64",
+        NETWORK: "string",
+        ACTOR: "string",
+        PROTOCOL: "string",
+        P: "float64",
+    }
     proto, p, net = get_simulation_params(file_path)
     file_df = pd.read_csv(file_path)
-    file_df["network"] = net
-    file_df["protocol"] = proto
-    file_df["p"] = p
-    return file_df
+    file_df[NETWORK] = net
+    file_df[PROTOCOL] = proto
+    file_df[P] = p
+    return file_df.astype(dtype_mapping)
 
 
-def load_sp(csv_paths: list[str]) -> pd.DataFrame:
+def load_sp(csv_paths: dict[str, list[str]]) -> dict[str, pd.DataFrame]:
     """Read spreading potentials stored in files indicated by given regex."""
-    raw_csvs = []
-    for _, file_path in enumerate(csv_paths):
-        raw_csvs.append(read_csv(file_path))
-    sp = pd.concat(raw_csvs, axis=0, ignore_index=True)
-    assert len(sp["network"].unique()) == 1
-    sp[[SIMULATION_LENGTH, EXPOSED, NOT_EXPOSED, PEAK_INFECTED, PEAK_ITERATION, P]] = sp[
-        [SIMULATION_LENGTH, EXPOSED, NOT_EXPOSED, PEAK_INFECTED, PEAK_ITERATION, P]
-    ].apply(pd.to_numeric)
-    sp[ACTOR] = sp[ACTOR].astype(str)
-    return sp
+    sp_dict = {}
+    for batch_name, batch_paths in csv_paths.items():
+        raw_csvs = []
+        for _, file_path in enumerate(batch_paths):
+            raw_csvs.append(read_csv(file_path))
+        sp = pd.concat(raw_csvs, axis=0, ignore_index=True)
+        assert len(sp["network"].unique()) == 1
+        sp_dict[batch_name] = sp
+    return sp_dict
 
 
 def _get_csv_paths(csv_regex: str) -> list[Path]:
@@ -122,9 +134,9 @@ def _load_sp_paths_batch_2(net_type: str, net_name: str) -> list[Path]:
     raise AttributeError(f"Unknown network: {net_type}")
 
 
-def load_sp_paths(net_type: str, net_name: str) -> list[Path]:
+def load_sp_paths(net_type: str, net_name: str) -> dict[str, list[Path]]:
     """Load spreading potentials dataset for given network."""
-    return [
-        *_load_sp_paths_batch_1(net_name=net_name, net_type=net_type),
-        *_load_sp_paths_batch_2(net_name=net_name, net_type=net_type),
-    ]
+    return {
+        "batch_1": _load_sp_paths_batch_1(net_name=net_name, net_type=net_type),
+        "batch_2": _load_sp_paths_batch_2(net_name=net_name, net_type=net_type),
+    }

@@ -1,0 +1,6 @@
+outs:
+- md5: bc50fb134317a9e7a6e03eb77e5f2773.dir
+  size: 1154510
+  nfiles: 40
+  hash: md5
+  path: aucs

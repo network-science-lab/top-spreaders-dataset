@@ -1,0 +1,6 @@
+outs:
+- md5: d29eb2d0e77983544a95097943ea8f47.dir
+  size: 10420591
+  nfiles: 80
+  hash: md5
+  path: eu_transportation

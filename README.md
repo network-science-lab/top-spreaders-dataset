@@ -1,4 +1,4 @@
-# Network Science Lab Data Sources 
+# Network Science Lab's Data Sources 
 
 A repository with dataset and Python package to handle it.
 
@@ -9,12 +9,12 @@ A repository with dataset and Python package to handle it.
 
 ```bash
 .
-├── .dvc                   -> configuration of DVC
-├── env                    -> a definition of the runtime environment for Python package
-├── nsl_data_utils         -> Python package handling data with spreading models used to generate it
-├── nsl_data_sources       -> directory with datasets
+├── .dvc                      -> configuration of the DVC storage
+├── env                       -> a definition of the runtime environment
+├── nsl_data_utils            -> a Python package handling the data set
+├── nsl_data_sources          -> raw data
 ├── mln_potentials_eda.ipynb  -> jupyter notebook to create EDA of datasets
-└── README.md              -> main entrypoint to trigger the pipeline
+└── README.md                 -> main entrypoint to trigger the pipeline
 ```
 
 ## The dataset

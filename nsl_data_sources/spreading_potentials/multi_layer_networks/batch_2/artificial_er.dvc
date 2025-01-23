@@ -1,0 +1,6 @@
+outs:
+- md5: 9476c374521461034848cfc076beacc2.dir
+  size: 1222212010
+  nfiles: 4000
+  hash: md5
+  path: artificial_er

@@ -5,7 +5,7 @@ actors. It also includes a Python package to facilitate the data loading process
 of the artefacts described in the paper  
 [*Identifying Super Spreaders in Multilayer Networks*](https://arxiv.org/abs/2505.20980).
 
-- **Authors**: Piotr Bródka, Michał Czuba, Adam Piróg, Mateusz Stolarski  
+- **Authors**: Michał Czuba, Mateusz Stolarski, Adam Piróg, Piotr Bielak, Piotr Bródka
 - **Affiliation**: Wrocław University of Science and Technology, Wrocław, Lower Silesia, Poland
 
 ## Structure of the Repository
@@ -18,6 +18,9 @@ of the artefacts described in the paper
 ├── nsl_data_sources          -> Directory with source data files
 └── README.md
 ```
+
+Version 2.0.0 - a dataset in the exact form that was used in experiments
+Version 2.0.1 - a variant with improved manual
 
 ## Source Data Files
 
@@ -33,9 +36,8 @@ access, please contact one of the contributors. Then, to fetch the data, run `dv
 ### Paper Version
 
 A public DVC configuration for the dataset version used in the paper is available at:
-`https://drive.google.com/drive/folders/0ACmD69K7LbU3Uk9PVA`. To use it, unpack the archive, and
-move the folder `cache` into the `.dvc` directory. Then, checkout to the tag `2.0.1` and
-execute: `dvc pull`. 
+`https://drive.google.com/file/d/1OnNLhjKotOlV0c2_1FcJgCCzQdTGRtoQ`. To use it, unpack the archive,
+and move its contents into the `.dvc` directory of this project. Then, execute: `dvc checkout`. 
 
 ## Using the Package
 

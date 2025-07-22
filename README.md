@@ -22,16 +22,20 @@ of the artefacts described in the paper
 ## Source Data Files
 
 The dataset is managed using [DVC](https://dvc.org/). To use it, first install the required  
-dependencies listed in `requirements.txt`, including the appropriate version of DVC. To download
-the dataset, you must authenticate with a Google account that has access to the shared Google Drive
-storage: `https://drive.google.com/drive/folders/0ACmD69K7LbU3Uk9PVA`. If you need access, please
-contact one of the contributors. Then, to fetch the data, run the following command:
-`dvc pull <path_to_dvc_file>`.
+dependencies listed in `requirements.txt`, including the appropriate version of DVC.
 
-A public DVC configuration for the dataset version used in the experiments described in the paper  
-is available at: `https://drive.google.com/drive/folders/0ACmD69K7LbU3Uk9PVA`. To use it unpack
-the archive, and move the folder `cache` into the `.dvc` directory. Then, checkout to the tag
-`2.0.1` and execute: `dvc pull`. 
+### Full Access
+
+To download the dataset, you must authenticate with a Google account that has access to the shared
+Google Drive storage: `https://drive.google.com/drive/folders/0ACmD69K7LbU3Uk9PVA`. If you need
+access, please contact one of the contributors. Then, to fetch the data, run `dvc pull`.
+
+### Paper Version
+
+A public DVC configuration for the dataset version used in the paper is available at:
+`https://drive.google.com/drive/folders/0ACmD69K7LbU3Uk9PVA`. To use it, unpack the archive, and
+move the folder `cache` into the `.dvc` directory. Then, checkout to the tag `2.0.1` and
+execute: `dvc pull`. 
 
 ## Using the Package
 

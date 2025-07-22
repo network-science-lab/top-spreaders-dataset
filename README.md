@@ -1,41 +1,47 @@
-# Network Science Lab Data Sources 
+# TopSpreadersDataset
 
-A repository with dataset and Python package to handle it.
+This repository contains a dataset of multilayer networks and the spreading potentials of their  
+actors. It also includes a Python package to facilitate the data loading process. The dataset is one  
+of the artefacts described in the paper  
+[*Identifying Super Spreaders in Multilayer Networks*](https://arxiv.org/abs/2505.20980).
 
-* Authors: Piotr Bródka, Michał Czuba, Adam Piróg, Mateusz Stolarski
-* Affiliation: WUST, Wrocław, Lower Silesia, Poland
+- **Authors**: Piotr Bródka, Michał Czuba, Adam Piróg, Mateusz Stolarski  
+- **Affiliation**: Wrocław University of Science and Technology, Wrocław, Lower Silesia, Poland
 
-## Structure of the repository
+## Structure of the Repository
 
 ```bash
 .
-├── .dvc                   -> configuration of DVC
-├── env                    -> a definition of the runtime environment for Python package
-├── nsl_data_utils         -> Python package handling data with spreading models used to generate it
-├── nsl_data_sources       -> directory with datasets
-├── mln_potentials_eda.ipynb  -> jupyter notebook to create EDA of datasets
-└── README.md              -> main entrypoint to trigger the pipeline
+├── .dvc                      -> DVC configuration files
+├── env                       -> Env. requirements for the Python package
+├── nsl_data_utils            -> Python package for handling the dataset
+├── nsl_data_sources          -> Directory with source data files
+└── README.md
 ```
 
-## The dataset
+## Source Data Files
 
-Dataset is stored with DVC. It requires to install `requirements.txt` containing version of used dvc
-package. Pulling the data for the first time requires authentication to Google Drive
-(`https://drive.google.com/drive/folders/0ACmD69K7LbU3Uk9PVA`) via an account that has permissions
-to our shared storage. For permissions, contact one of the contributors. Then, to download the data,
-execute in a shell: `dvc pull <path_to_dvc_file>`.
+The dataset is managed using [DVC](https://dvc.org/). To use it, first install the required  
+dependencies listed in `requirements.txt`, including the appropriate version of DVC. To download
+the dataset, you must authenticate with a Google account that has access to the shared Google Drive
+storage: `https://drive.google.com/drive/folders/0ACmD69K7LbU3Uk9PVA`. If you need access, please
+contact one of the contributors. Then, to fetch the data, run the following command:
+`dvc pull <path_to_dvc_file>`.
 
-## Python package
+A public DVC configuration for the dataset version used in the experiments described in the paper  
+is available at: `https://drive.google.com/drive/folders/0ACmD69K7LbU3Uk9PVA`. To use it unpack
+the archive, and move the folder `cache` into the `.dvc` directory. Then, checkout to the tag
+`2.0.1` and execute: `dvc pull`. 
 
-`nsl_data_utils`is Python package with loaders for the datasets and implementations of 
-Independent Cascade Model used to generate spreading potentials the agents. To use it, you can
-install it with command:
+## Using the Package
+
+To install the package in editable mode, run:
 
 ```bash
 pip install -e nsl_data_utils
 ```
 
-To contribute, please install first Conda environment:
+To contribute to the repository, create and activate the development environment using Conda:
 
 ```bash
 conda env create -f env/conda.yaml

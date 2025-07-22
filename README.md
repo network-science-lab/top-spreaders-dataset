@@ -2,11 +2,39 @@
 
 This repository contains a dataset of multilayer networks and the spreading potentials of their  
 actors. It also includes a Python package to facilitate the data loading process. The dataset is one  
-of the artefacts described in the paper  
+of the artefacts described in the paper
 [*Identifying Super Spreaders in Multilayer Networks*](https://arxiv.org/abs/2505.20980).
 
 - **Authors**: Michał Czuba, Mateusz Stolarski, Adam Piróg, Piotr Bielak, Piotr Bródka
 - **Affiliation**: Wrocław University of Science and Technology, Wrocław, Lower Silesia, Poland
+
+## Functionality
+
+The dataset comprises over 200 multilayer networks, including both synthetic and real-world
+examples. Each actor is labelled according to their spreading capability, assessed through
+simulation. Specifically, for every actor, a diffusion under the Multilayer Independent Cascade
+Model is initiated with that actor as the sole seed. From each simulation, a feature vector is
+extracted, containing:
+- the total number of activated nodes,
+- the duration of the diffusion process (i.e. number of time steps),
+- the maximum number of activations in a single step (the peak),
+- the time step at which this peak occurs.
+
+A summary of the networks included in the dataset, along with their key statistics, is provided
+below. For synthetic networks, mean values are reported across all instances.
+
+| Network type     | Layers | Actors  | Nodes   | Edges    | Degree |
+| ---------------- | ------ | ------- | ------- | -------- | ------ |
+| artificial-er    | 3.52   | 558.19  | 1741.70 | 6684.00  | 24.13  |
+| artificial-pa    | 3.52   | 574.51  | 1976.07 | 42636.53 | 122.10 |
+| artificial-small | 2.75   | 1000.00 | 2750.00 | 6609.12  | 13.22  |
+| arxiv            | 13     | 14065   | 26796   | 59026    | 8.39   |
+| aucs             | 5      | 61      | 224     | 620      | 20.33  |
+| ckmp             | 3      | 241     | 674     | 1370     | 11.37  |
+| eu-trans         | 37     | 417     | 2034    | 3588     | 17.21  |
+| l2-course        | 2      | 41      | 82      | 297      | 14.49  |
+| lazega           | 3      | 71      | 212     | 1659     | 46.73  |
+| timik            | 3      | 61702   | 102247  | 875191   | 28.37  |
 
 ## Structure of the Repository
 

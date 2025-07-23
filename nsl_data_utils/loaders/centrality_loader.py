@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import pandas as pd
-from nsl_data_utils.loaders.constants import (
+from tsds_utils.loaders.constants import (
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
     ARTIFICIAL_SMALL,

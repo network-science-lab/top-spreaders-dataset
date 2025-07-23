@@ -42,8 +42,8 @@ below. For synthetic networks, mean values are reported across all instances.
 .
 ├── .dvc                      -> DVC configuration files
 ├── env                       -> Env. requirements for the Python package
-├── nsl_data_utils            -> Python package for handling the dataset
-├── nsl_data_sources          -> Directory with source data files
+├── tsds_utils                -> Python package for handling the dataset
+├── tsds_sources              -> Directory with source data files
 └── README.md
 ```
 
@@ -72,12 +72,12 @@ and move its contents into the `.dvc` directory of this project. Then, execute: 
 To install the package in editable mode, run:
 
 ```bash
-pip install -e nsl_data_utils
+pip install -e tsds_utils
 ```
 
 To contribute to the repository, create and activate the development environment using Conda:
 
 ```bash
 conda env create -f env/conda.yaml
-conda activate nsl-data-utils
+conda activate tsds-utils
 ```

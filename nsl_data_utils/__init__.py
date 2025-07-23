@@ -1,5 +1,5 @@
-"""Code to handle dataset and spreading models used to generate the dataset."""
+"""Code to handle TopSpreadersDataset."""
 
 import importlib.metadata
 
-__version__ = importlib.metadata.version("nsl_data_utils")
+__version__ = importlib.metadata.version("tsds_utils")

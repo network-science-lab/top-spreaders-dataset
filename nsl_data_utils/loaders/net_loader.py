@@ -9,7 +9,7 @@ import network_diffusion as nd
 import networkx as nx
 from bidict import bidict
 
-from nsl_data_utils.loaders.constants import (
+from tsds_utils.loaders.constants import (
     MLN_RAW_DATA_PATH,
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
@@ -30,7 +30,7 @@ from nsl_data_utils.loaders.constants import (
     TIMIK1Q2009,
     TOY_NETWORK,
 )
-from nsl_data_utils.loaders.fmri74 import read_fmri74
+from tsds_utils.loaders.fmri74 import read_fmri74
 
 
 def _network_from_pandas(path):

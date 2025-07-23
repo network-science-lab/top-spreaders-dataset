@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 import pandas as pd
-from nsl_data_utils.loaders.constants import (
+from tsds_utils.loaders.constants import (
     ACTOR,
     EXPOSED,
     MLN_SP_DATA_PATH,

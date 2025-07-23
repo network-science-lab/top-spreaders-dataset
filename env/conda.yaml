@@ -1,4 +1,4 @@
-name: nsl-data-utils
+name: tsds-utils
 channels:
   - defaults
 dependencies:

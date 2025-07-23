@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import uunet.multinet as ml
 
-from nsl_data_utils.misc.generators import MultilayerERGenerator, MultilayerPAGenerator
+from tsds_utils.misc.generators import MultilayerERGenerator, MultilayerPAGenerator
 from tqdm.contrib.concurrent import process_map
 
 

@@ -9,18 +9,16 @@ from network_diffusion.mln.functions import (
     degree,
     neighbourhood_size,
 )
-from nsl_data_utils.loaders import voterank
+from tsds_utils.loaders import voterank
 
 MLN_RAW_DATA_PATH = (
-    Path(__file__).parent.parent.parent / "nsl_data_sources/raw/multi_layer_networks"
+    Path(__file__).parent.parent.parent / "tsds_sources/raw/multi_layer_networks"
 )
 MLN_SP_DATA_PATH = (
-    Path(__file__).parent.parent.parent
-    / "nsl_data_sources/spreading_potentials/multi_layer_networks"
+    Path(__file__).parent.parent.parent / "tsds_sources/spreading_potentials/multi_layer_networks"
 )
 MLN_CENTRALITIES_DATA_PATH = (
-    Path(__file__).parent.parent.parent
-    / "nsl_data_sources/centralities/multi_layer_networks"
+    Path(__file__).parent.parent.parent / "tsds_sources/centralities/multi_layer_networks"
 )
 
 # columns in the dataset

@@ -10,7 +10,7 @@ from network_diffusion.mln.mlnetwork import MultilayerNetwork, MLNetworkActor
 from tqdm.contrib.concurrent import process_map
 from tqdm import tqdm
 
-from nsl_data_utils.loaders.constants import (
+from tsds_utils.loaders.constants import (
     ARTIFICIAL_ER,
     ARTIFICIAL_PA,
     ARTIFICIAL_SMALL,
@@ -31,7 +31,7 @@ from nsl_data_utils.loaders.constants import (
     TIMIK1Q2009,
     TOY_NETWORK,
 )
-from nsl_data_utils.loaders.net_loader import load_network
+from tsds_utils.loaders.net_loader import load_network
 
 
 AVAILABLE_NETWORKS = [

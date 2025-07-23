@@ -15,12 +15,10 @@ MLN_RAW_DATA_PATH = (
     Path(__file__).parent.parent.parent / "tsds_sources/raw/multi_layer_networks"
 )
 MLN_SP_DATA_PATH = (
-    Path(__file__).parent.parent.parent
-    / "tsds_sources/spreading_potentials/multi_layer_networks"
+    Path(__file__).parent.parent.parent / "tsds_sources/spreading_potentials/multi_layer_networks"
 )
 MLN_CENTRALITIES_DATA_PATH = (
-    Path(__file__).parent.parent.parent
-    / "tsds_sources/centralities/multi_layer_networks"
+    Path(__file__).parent.parent.parent / "tsds_sources/centralities/multi_layer_networks"
 )
 
 # columns in the dataset

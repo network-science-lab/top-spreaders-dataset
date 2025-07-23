@@ -72,7 +72,7 @@ and move its contents into the `.dvc` directory of this project. Then, execute: 
 To install the package in editable mode, run:
 
 ```bash
-pip install -e tsds_utils
+pip install -e .
 ```
 
 To contribute to the repository, create and activate the development environment using Conda:
